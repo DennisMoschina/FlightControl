@@ -4,7 +4,6 @@
 #include <Arduino.h>
 
 #include <Wire.h>
-#include <map>
 
 #define MPU_ADDR 0x68
 #define POWER_MANAGEMENT_REGISTER 0x6B
@@ -12,13 +11,15 @@
 #define ACCELEROMETER_CONFIG_REGISTER 0x1C
 
 #define GYRO_READING_REGISTER 0x43
-#define GYRO_REGISTER_SIZE 6
+#define ACCEL_READING_REGISTER 0x3B
 
-#define X 0
-#define Y 1
-#define Z 2
+#define AXIS_DATA_REGISTER_SIZE 6
 
-using AxisData = std::map<int, int>;
+typedef struct {
+    int16_t x = 0;
+    int16_t y = 0;
+    int16_t z = 0;
+} AxisData;
 
 class MPU6050 {
 public:
@@ -27,10 +28,23 @@ public:
 
     AxisData readGyro();
 
-    void setGyroOffset(int offset, int axis);
+    AxisData readAccel();
+
+    void setGyroXOffset(int offset);
+    void setGyroYOffset(int offset);
+    void setGyroZOffset(int offset);
+
+    void setAccelXOffset(int offset);
+    void setAccelYOffset(int offset);
+    void setAccelZOffset(int offset);
 
 private:
     AxisData gyroOffset;
+    AxisData accelOffset;
+
+    AxisData readAxisData(int registerPos);
+
+    AxisData calculateAxisOffset(int registerPos, int duration = 2000, int interval = 20);
 };
 
 #endif

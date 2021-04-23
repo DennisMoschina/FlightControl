@@ -2,10 +2,6 @@
 
 MPU6050::MPU6050(byte sda, byte scl) {
     Wire.begin(sda, scl);
-
-    // this->gyroOffset[X] = -64420;
-    // this->gyroOffset[Y] = -80;
-    // this->gyroOffset[Z] = -65240;
 }
 
 void MPU6050::begin() {
@@ -23,25 +19,96 @@ void MPU6050::begin() {
     Wire.write(ACCELEROMETER_CONFIG_REGISTER);
     Wire.write(0);                              //set accelerometer to +/- 2g
     Wire.endTransmission(true);
+
+    this->gyroOffset = this->calculateAxisOffset(GYRO_READING_REGISTER);
+    this->accelOffset = this->calculateAxisOffset(ACCEL_READING_REGISTER);
+
+    Serial.println("=======================Offsets=======================");
+    Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", this->gyroOffset.x, this->gyroOffset.y, this->gyroOffset.z);
+    Serial.printf("Accel\tx: %d, y: %d, z: %d\n", this->accelOffset.x, this->accelOffset.y, this->accelOffset.z);
+    Serial.println("=====================================================");
+    Serial.println("=====================================================");
 }
 
 AxisData MPU6050::readGyro() {
-    AxisData gyroReadings;
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(GYRO_READING_REGISTER);
-    Wire.endTransmission();
-    Wire.requestFrom(MPU_ADDR, GYRO_REGISTER_SIZE);
-
-    while (Wire.available() < 6);
-    gyroReadings[X] = Wire.read() << 8 | Wire.read();
-    gyroReadings[Y] = Wire.read() << 8 | Wire.read();
-    gyroReadings[Z] = Wire.read() << 8 | Wire.read();
-
-    AxisData::iterator iterator = gyroReadings.begin();
-    while (iterator != gyroReadings.end()) {
-        iterator->second += this->gyroOffset[iterator->first];
-        iterator++;
-    }
+    AxisData gyroReadings = this->readAxisData(GYRO_READING_REGISTER);
+    gyroReadings.x -= this->gyroOffset.x;
+    gyroReadings.y -= this->gyroOffset.y;
+    gyroReadings.z -= this->gyroOffset.z;
 
     return gyroReadings;
+}
+
+AxisData MPU6050::readAccel() {
+    AxisData accelReadings = this->readAxisData(ACCEL_READING_REGISTER);
+    accelReadings.x -= this->accelOffset.x;
+    accelReadings.y -= this->accelOffset.y;
+    accelReadings.z -= this->accelOffset.z;
+
+    return accelReadings;
+}
+
+AxisData MPU6050::readAxisData(int registerPos) {
+    AxisData data;
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(registerPos);
+    Wire.endTransmission();
+    Wire.requestFrom(MPU_ADDR, AXIS_DATA_REGISTER_SIZE);
+
+    while (Wire.available() < AXIS_DATA_REGISTER_SIZE);
+    data.x = Wire.read() << 8 | Wire.read();
+    data.y = Wire.read() << 8 | Wire.read();
+    data.z = Wire.read() << 8 | Wire.read();
+
+    return data;
+}
+
+
+void MPU6050::setGyroXOffset(int offset) {
+    this->gyroOffset.x = offset;
+}
+
+void MPU6050::setGyroYOffset(int offset) {
+    this->gyroOffset.y = offset;
+}
+
+void MPU6050::setGyroZOffset(int offset) {
+    this->gyroOffset.z = offset;
+}
+
+void MPU6050::setAccelXOffset(int offset) {
+    this->accelOffset.x = offset;
+}
+
+void MPU6050::setAccelYOffset(int offset) {
+    this->accelOffset.y = offset;
+}
+
+void MPU6050::setAccelZOffset(int offset) {
+    this->accelOffset.z = offset;
+}
+
+
+
+AxisData MPU6050::calculateAxisOffset(int registerPos, int duration, int interval) {
+    unsigned long startTime = millis();
+    AxisData offset;
+    int readings = 0;
+    while(millis() < startTime + duration) {
+        AxisData data = this->readAxisData(registerPos);
+        readings++;
+        offset.x += data.x;
+        offset.y += data.y;
+        offset.z += data.z;
+
+        delay(interval);
+    }
+
+    if (readings > 0) {
+        offset.x = offset.x / readings;
+        offset.y = offset.y / readings;
+        offset.z = offset.z / readings;
+    }
+
+    return offset;
 }

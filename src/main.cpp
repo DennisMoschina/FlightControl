@@ -7,20 +7,6 @@
 
 MPU6050 mpu = MPU6050();
 
-String mapToString(AxisData map) {
-    String output;
-    AxisData::iterator iterator = map.begin();
-    while (iterator != map.end()) {
-        output += iterator->first;
-        output += ": ";
-        output += iterator->second;
-        output += " ";
-        iterator++;
-    }
-    output += "\n";
-    return output;
-}
-
 void setup() {
     Serial.begin(115200);
 
@@ -29,6 +15,9 @@ void setup() {
 
 void loop() {
     AxisData gyroReadings = mpu.readGyro();
-    Serial.print(mapToString(gyroReadings));
+    AxisData accelReadings = mpu.readAccel();
+    Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", gyroReadings.x, gyroReadings.y, gyroReadings.z);
+    Serial.printf("Accel\tx: %d, y: %d, z: %d\n", accelReadings.x, accelReadings.y, accelReadings.z);
+    Serial.println("=====================================================");
     delay(500);
 }
