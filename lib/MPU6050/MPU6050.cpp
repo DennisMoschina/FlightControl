@@ -20,13 +20,14 @@ void MPU6050::begin() {
     Wire.write(0);                              //set accelerometer to +/- 2g
     Wire.endTransmission(true);
 
+    delay(1000);
+
     this->gyroOffset = this->calculateAxisOffset(GYRO_READING_REGISTER);
 
-    Serial.println("\n=======================Offsets=======================");
-    Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", this->gyroOffset.x, this->gyroOffset.y, this->gyroOffset.z);
-    Serial.printf("Accel\tx: %d, y: %d, z: %d\n", this->accelOffset.x, this->accelOffset.y, this->accelOffset.z);
-    Serial.println("=====================================================");
-    Serial.println("=====================================================");
+    log_v("\n=======================Offsets=======================");
+    log_v("Gyro\tx:%7d, y:%7d, z:%7d", this->gyroOffset.x, this->gyroOffset.y, this->gyroOffset.z);
+    log_v("Accel\tx:%7d, y:%7d, z:%7d", this->accelOffset.x, this->accelOffset.y, this->accelOffset.z);
+    log_v("=====================================================\n");
 }
 
 RawAxisData MPU6050::readGyro() {
@@ -65,9 +66,9 @@ RawAxisData MPU6050::readAxisData(int registerPos) {
 RotationData MPU6050::getRotation() {
     RawAxisData gyroData = this->readGyro();
     RotationData rotation;
-    rotation.x = gyroData.x / DEGREE_PER_SECOND;
-    rotation.y = gyroData.y / DEGREE_PER_SECOND;
-    rotation.z = gyroData.z / DEGREE_PER_SECOND;
+    rotation.x = ROTATION_DATA_TYPE(gyroData.x) / DEGREE_PER_SECOND;
+    rotation.y = ROTATION_DATA_TYPE(gyroData.y) / DEGREE_PER_SECOND;
+    rotation.z = ROTATION_DATA_TYPE(gyroData.z) / DEGREE_PER_SECOND;
 
     return rotation;
 }

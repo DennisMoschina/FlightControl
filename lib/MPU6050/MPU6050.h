@@ -18,6 +18,7 @@
 #define DEGREE_PER_SECOND 131
 
 #define RAW_DATA_TYPE int16_t
+#define ROTATION_DATA_TYPE float
 
 template<typename T> struct AxisData {
     T x = 0;
@@ -26,7 +27,7 @@ template<typename T> struct AxisData {
 };
 
 typedef AxisData<RAW_DATA_TYPE> RawAxisData;
-typedef AxisData<float> RotationData;
+typedef AxisData<ROTATION_DATA_TYPE> RotationData;
 
 class MPU6050 {
 public:

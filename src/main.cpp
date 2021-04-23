@@ -18,8 +18,7 @@ void loop() {
     RotationData gyroReadings = mpu.getRotation();
     RawAxisData accelReadings = mpu.readAccel();
     // Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    Serial.printf("Gyro\tx: %f, y: %f, z: %f\n", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    Serial.printf("Accel\tx: %d, y: %d, z: %d\n", accelReadings.x, accelReadings.y, accelReadings.z);
-    Serial.println("=====================================================");
+    log_d("Gyro\tx:%7.2f, y:%7.2f, z:%7.2f", gyroReadings.x, gyroReadings.y, gyroReadings.z);
+    log_d("Accel\tx:%7d, y:%7d, z:%7d\n", accelReadings.x, accelReadings.y, accelReadings.z);
     delay(500);
 }
