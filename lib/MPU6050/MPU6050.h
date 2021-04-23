@@ -44,7 +44,7 @@ private:
 
     AxisData readAxisData(int registerPos);
 
-    AxisData calculateAxisOffset(int registerPos, int duration = 2000, int interval = 20);
+    AxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
 };
 
 #endif

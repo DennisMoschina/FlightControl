@@ -21,9 +21,8 @@ void MPU6050::begin() {
     Wire.endTransmission(true);
 
     this->gyroOffset = this->calculateAxisOffset(GYRO_READING_REGISTER);
-    this->accelOffset = this->calculateAxisOffset(ACCEL_READING_REGISTER);
 
-    Serial.println("=======================Offsets=======================");
+    Serial.println("\n=======================Offsets=======================");
     Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", this->gyroOffset.x, this->gyroOffset.y, this->gyroOffset.z);
     Serial.printf("Accel\tx: %d, y: %d, z: %d\n", this->accelOffset.x, this->accelOffset.y, this->accelOffset.z);
     Serial.println("=====================================================");
@@ -90,25 +89,28 @@ void MPU6050::setAccelZOffset(int offset) {
 
 
 
-AxisData MPU6050::calculateAxisOffset(int registerPos, int duration, int interval) {
-    unsigned long startTime = millis();
-    AxisData offset;
-    int readings = 0;
-    while(millis() < startTime + duration) {
+AxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
+    int16_t x[numberOfReadings];
+    int16_t y[numberOfReadings];
+    int16_t z[numberOfReadings];
+
+    for (int i = 0; i < numberOfReadings; i++) {
         AxisData data = this->readAxisData(registerPos);
-        readings++;
-        offset.x += data.x;
-        offset.y += data.y;
-        offset.z += data.z;
-
-        delay(interval);
+        x[i] = data.x;
+        y[i] = data.y;
+        z[i] = data.z;
     }
 
-    if (readings > 0) {
-        offset.x = offset.x / readings;
-        offset.y = offset.y / readings;
-        offset.z = offset.z / readings;
-    }
+    std::sort(x, x + numberOfReadings);
+    std::sort(y, y + numberOfReadings);
+    std::sort(z, z + numberOfReadings);
+
+    const int middle = numberOfReadings / 2;
+
+    AxisData offset;
+    offset.x = x[middle];
+    offset.y = y[middle];
+    offset.z = z[middle];
 
     return offset;
 }
