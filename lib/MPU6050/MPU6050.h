@@ -15,36 +15,44 @@
 
 #define AXIS_DATA_REGISTER_SIZE 6
 
-typedef struct {
-    int16_t x = 0;
-    int16_t y = 0;
-    int16_t z = 0;
-} AxisData;
+#define DEGREE_PER_SECOND 131
+
+#define RAW_DATA_TYPE int16_t
+
+template<typename T> struct AxisData {
+    T x = 0;
+    T y = 0;
+    T z = 0;
+};
+
+typedef AxisData<RAW_DATA_TYPE> RawAxisData;
+typedef AxisData<float> RotationData;
 
 class MPU6050 {
 public:
     MPU6050(byte sda = 21, byte scl = 22);
     void begin();
 
-    AxisData readGyro();
+    RawAxisData readGyro();
+    RawAxisData readAccel();
 
-    AxisData readAccel();
+    RotationData getRotation();
 
-    void setGyroXOffset(int offset);
-    void setGyroYOffset(int offset);
-    void setGyroZOffset(int offset);
+    void setGyroXOffset(RAW_DATA_TYPE offset);
+    void setGyroYOffset(RAW_DATA_TYPE offset);
+    void setGyroZOffset(RAW_DATA_TYPE offset);
 
-    void setAccelXOffset(int offset);
-    void setAccelYOffset(int offset);
-    void setAccelZOffset(int offset);
+    void setAccelXOffset(RAW_DATA_TYPE offset);
+    void setAccelYOffset(RAW_DATA_TYPE offset);
+    void setAccelZOffset(RAW_DATA_TYPE offset);
 
 private:
-    AxisData gyroOffset;
-    AxisData accelOffset;
+    RawAxisData gyroOffset;
+    RawAxisData accelOffset;
 
-    AxisData readAxisData(int registerPos);
+    RawAxisData readAxisData(int registerPos);
 
-    AxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
+    RawAxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
 };
 
 #endif

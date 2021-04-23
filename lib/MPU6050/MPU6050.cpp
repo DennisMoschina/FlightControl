@@ -29,8 +29,8 @@ void MPU6050::begin() {
     Serial.println("=====================================================");
 }
 
-AxisData MPU6050::readGyro() {
-    AxisData gyroReadings = this->readAxisData(GYRO_READING_REGISTER);
+RawAxisData MPU6050::readGyro() {
+    RawAxisData gyroReadings = this->readAxisData(GYRO_READING_REGISTER);
     gyroReadings.x -= this->gyroOffset.x;
     gyroReadings.y -= this->gyroOffset.y;
     gyroReadings.z -= this->gyroOffset.z;
@@ -38,8 +38,8 @@ AxisData MPU6050::readGyro() {
     return gyroReadings;
 }
 
-AxisData MPU6050::readAccel() {
-    AxisData accelReadings = this->readAxisData(ACCEL_READING_REGISTER);
+RawAxisData MPU6050::readAccel() {
+    RawAxisData accelReadings = this->readAxisData(ACCEL_READING_REGISTER);
     accelReadings.x -= this->accelOffset.x;
     accelReadings.y -= this->accelOffset.y;
     accelReadings.z -= this->accelOffset.z;
@@ -47,8 +47,8 @@ AxisData MPU6050::readAccel() {
     return accelReadings;
 }
 
-AxisData MPU6050::readAxisData(int registerPos) {
-    AxisData data;
+RawAxisData MPU6050::readAxisData(int registerPos) {
+    RawAxisData data;
     Wire.beginTransmission(MPU_ADDR);
     Wire.write(registerPos);
     Wire.endTransmission();
@@ -62,40 +62,49 @@ AxisData MPU6050::readAxisData(int registerPos) {
     return data;
 }
 
+RotationData MPU6050::getRotation() {
+    RawAxisData gyroData = this->readGyro();
+    RotationData rotation;
+    rotation.x = gyroData.x / DEGREE_PER_SECOND;
+    rotation.y = gyroData.y / DEGREE_PER_SECOND;
+    rotation.z = gyroData.z / DEGREE_PER_SECOND;
 
-void MPU6050::setGyroXOffset(int offset) {
+    return rotation;
+}
+
+void MPU6050::setGyroXOffset(RAW_DATA_TYPE offset) {
     this->gyroOffset.x = offset;
 }
 
-void MPU6050::setGyroYOffset(int offset) {
+void MPU6050::setGyroYOffset(RAW_DATA_TYPE offset) {
     this->gyroOffset.y = offset;
 }
 
-void MPU6050::setGyroZOffset(int offset) {
+void MPU6050::setGyroZOffset(RAW_DATA_TYPE offset) {
     this->gyroOffset.z = offset;
 }
 
-void MPU6050::setAccelXOffset(int offset) {
+void MPU6050::setAccelXOffset(RAW_DATA_TYPE offset) {
     this->accelOffset.x = offset;
 }
 
-void MPU6050::setAccelYOffset(int offset) {
+void MPU6050::setAccelYOffset(RAW_DATA_TYPE offset) {
     this->accelOffset.y = offset;
 }
 
-void MPU6050::setAccelZOffset(int offset) {
+void MPU6050::setAccelZOffset(RAW_DATA_TYPE offset) {
     this->accelOffset.z = offset;
 }
 
 
 
-AxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
-    int16_t x[numberOfReadings];
-    int16_t y[numberOfReadings];
-    int16_t z[numberOfReadings];
+RawAxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
+    RAW_DATA_TYPE x[numberOfReadings];
+    RAW_DATA_TYPE y[numberOfReadings];
+    RAW_DATA_TYPE z[numberOfReadings];
 
     for (int i = 0; i < numberOfReadings; i++) {
-        AxisData data = this->readAxisData(registerPos);
+        RawAxisData data = this->readAxisData(registerPos);
         x[i] = data.x;
         y[i] = data.y;
         z[i] = data.z;
@@ -107,7 +116,7 @@ AxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
 
     const int middle = numberOfReadings / 2;
 
-    AxisData offset;
+    RawAxisData offset;
     offset.x = x[middle];
     offset.y = y[middle];
     offset.z = z[middle];
