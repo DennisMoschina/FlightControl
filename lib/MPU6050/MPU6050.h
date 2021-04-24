@@ -5,6 +5,8 @@
 
 #include <Wire.h>
 
+#include <AxisData.h>
+
 #define MPU_ADDR 0x68
 #define POWER_MANAGEMENT_REGISTER 0x6B
 #define GYRO_CONFIG_REGISTER 0x1B
@@ -16,18 +18,6 @@
 #define AXIS_DATA_REGISTER_SIZE 6
 
 #define DEGREE_PER_SECOND 131
-
-#define RAW_DATA_TYPE int16_t
-#define ROTATION_DATA_TYPE float
-
-template<typename T> struct AxisData {
-    T x = 0;
-    T y = 0;
-    T z = 0;
-};
-
-typedef AxisData<RAW_DATA_TYPE> RawAxisData;
-typedef AxisData<ROTATION_DATA_TYPE> RotationData;
 
 class MPU6050 {
 public:

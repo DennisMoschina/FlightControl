@@ -4,6 +4,7 @@
 #include <Wire.h>
 
 #include <MPU6050.h>
+#include <PID.h>
 
 MPU6050 mpu = MPU6050();
 
