@@ -15,6 +15,20 @@ template<typename T> struct AxisData {
     T y;
     T z;
 
+    struct AxisData<T>& operator=(const T coords[3]) {
+        this->x = coords[0];
+        this->y = coords[1];
+        this->z = coords[2];
+        return *this;
+    }
+
+    struct AxisData<T>& operator=(const T& coords) {
+        this->x = coords;
+        this->y = coords;
+        this->z = coords;
+        return *this;
+    }
+
     struct AxisData<T>& operator+=(const AxisData<T>& rhs) {
         this->x += rhs.x;
         this->y += rhs.y;
@@ -57,6 +71,21 @@ template<typename T> struct AxisData {
         return *this;
     }
 };
+
+template<typename T>
+AxisData<T> operator+(AxisData<T> lhs, const AxisData<T>& rhs);
+template<typename T>
+AxisData<T> operator+(AxisData<T> lhs, T& k);
+
+template<typename T>
+AxisData<T> operator-(AxisData<T> lhs, const AxisData<T>& rhs);
+template<typename T>
+AxisData<T> operator-(AxisData<T> lhs, T& k);
+
+template<typename T>
+AxisData<T> operator*(AxisData<T> lhs, const AxisData<T>& rhs);
+template<typename T>
+AxisData<T> operator*(AxisData<T> lhs, T& k);
 
 typedef AxisData<RAW_DATA_TYPE> RawAxisData;
 typedef AxisData<ROTATION_DATA_TYPE> RotationData;

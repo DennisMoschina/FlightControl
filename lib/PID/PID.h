@@ -26,6 +26,8 @@ private:
     CorrectionData gainP;
     CorrectionData gainI;
     CorrectionData gainD;
+
+    CorrectionData relaxI;
 };
 
 #endif
