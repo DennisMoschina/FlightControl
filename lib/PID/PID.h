@@ -10,6 +10,12 @@ typedef AxisData<float> CorrectionData;
 class PID {
 public:
     PID();
+    /**
+     * Calculate the angular rate to output to counteract the error.
+     * @param setpoint the desired angular rate
+     * @param processVariable the current angular rate
+     * @return the angular rate to counteract the error
+     */
     RotationData loop(RotationData setpoint, RotationData processVariable);
 
     void setPGain(float x, float y, float z);

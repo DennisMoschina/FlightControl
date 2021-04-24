@@ -32,21 +32,14 @@ void MPU6050::begin() {
 
 RawAxisData MPU6050::readGyro() {
     RawAxisData gyroReadings = this->readAxisData(GYRO_READING_REGISTER);
-    gyroReadings.x -= this->gyroOffset.x;
-    gyroReadings.y -= this->gyroOffset.y;
-    gyroReadings.z -= this->gyroOffset.z;
-    // gyroReadings -= this->gyroOffset;
-    // gyroReadings = gyroReadings - this->gyroOffset;
+    gyroReadings -= this->gyroOffset;
 
     return gyroReadings;
 }
 
 RawAxisData MPU6050::readAccel() {
     RawAxisData accelReadings = this->readAxisData(ACCEL_READING_REGISTER);
-    accelReadings.x -= this->accelOffset.x;
-    accelReadings.y -= this->accelOffset.y;
-    accelReadings.z -= this->accelOffset.z;
-    // accelReadings -= this->accelOffset;
+    accelReadings -= this->accelOffset;
 
     return accelReadings;
 }

@@ -10,49 +10,53 @@
 
 template<typename T> struct AxisData {
     static_assert(std::is_arithmetic<T>::value, "T must be numeric");
+
     T x;
     T y;
     T z;
 
-    // template<typename R, typename U, typename S>
-    // friend AxisData<R> operator/(U divident);
-    //
-    // template<typename R, typename U, typename S>
-    // friend void operator+=(AxisData<U> summand);
-    // template<typename R, typename U, typename S>
-    // friend void operator-=(AxisData<U> subtrahend);
+    struct AxisData<T>& operator+=(const AxisData<T>& rhs) {
+        this->x += rhs.x;
+        this->y += rhs.y;
+        this->z += rhs.z;
+        return *this;
+    }
+
+    struct AxisData<T>& operator+=(const T& k) {
+        this->x += k;
+        this->y += k;
+        this->z += k;
+        return *this;
+    }
+
+    struct AxisData<T>& operator-=(const AxisData<T>& rhs) {
+        this->x -= rhs.x;
+        this->y -= rhs.y;
+        this->z -= rhs.z;
+        return *this;
+    }
+
+    struct AxisData<T>& operator-=(const T& k) {
+        this->x -= k;
+        this->y -= k;
+        this->z -= k;
+        return *this;
+    }
+
+    struct AxisData<T>& operator*=(const AxisData<T>& rhs) {
+        this->x *= rhs.x;
+        this->y *= rhs.y;
+        this->z *= rhs.z;
+        return *this;
+    }
+
+    struct AxisData<T>& operator*=(const T& k) {
+        this->x *= k;
+        this->y *= k;
+        this->z *= k;
+        return *this;
+    }
 };
-
-template<typename R, typename U, typename S>
-AxisData<R> operator+(AxisData<U> s1, S s2);
-template<typename R, typename U, typename S>
-AxisData<R> operator+(U s1, AxisData<S> s2);
-template<typename R, typename U, typename S>
-AxisData<R> operator+(AxisData<U> s1, AxisData<S> s2);
-
-template<typename R, typename U, typename S>
-AxisData<R> operator-(AxisData<U> minuend, S subtrahend);
-template<typename R, typename U, typename S>
-AxisData<R> operator-(U minuend, AxisData<S> subtrahend);
-template<typename R, typename U, typename S>
-AxisData<R> operator-(AxisData<U> minuend, AxisData<S> subtrahend);
-
-template<typename R, typename U, typename S>
-AxisData<R> operator*(AxisData<U> f1, S f2);
-template<typename R, typename U, typename S>
-AxisData<R> operator*(U f1, AxisData<S> f2);
-template<typename R, typename U, typename S>
-AxisData<R> operator*(AxisData<U> f1, AxisData<S> f2);
-
-template<typename U, typename S>
-AxisData<U>& operator+=(AxisData<U> s1, S s2);
-template<typename U, typename S>
-AxisData<U>& operator+=(AxisData<U> s1, AxisData<S> s2);
-
-template<typename U, typename S>
-AxisData<U>& operator-=(AxisData<U> minuend, S subtrahend);
-template<typename U, typename S>
-AxisData<U>& operator-=(AxisData<U> minuend, AxisData<S> subtrahend);
 
 typedef AxisData<RAW_DATA_TYPE> RawAxisData;
 typedef AxisData<ROTATION_DATA_TYPE> RotationData;
