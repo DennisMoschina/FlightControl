@@ -7,6 +7,7 @@
 #include <PID.h>
 
 MPU6050 mpu = MPU6050();
+PID pid;
 
 void setup() {
     Serial.begin(115200);
@@ -15,11 +16,14 @@ void setup() {
 }
 
 void loop() {
-    // RawAxisData gyroReadings = mpu.readGyro();
+    RotationData setpoint;
+    for (int i = 0; i < 3; i++) {
+        setpoint[i] = 0;
+    }
     RotationData gyroReadings = mpu.getRotation();
-    RawAxisData accelReadings = mpu.readAccel();
-    // Serial.printf("Gyro\tx: %d, y: %d, z: %d\n", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    log_d("Gyro\tx:%7.2f, y:%7.2f, z:%7.2f", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    log_d("Accel\tx:%7d, y:%7d, z:%7d\n", accelReadings.x, accelReadings.y, accelReadings.z);
+    RotationData output = pid.loop(setpoint, gyroReadings);
+    log_d("Gyro\t\tx:%7.2f, y:%7.2f, z:%7.2f", gyroReadings.x, gyroReadings.y, gyroReadings.z);
+    log_d("Setpoint\tx:%7.2f, y:%7.2f, z:%7.2f", setpoint.x, setpoint.y, setpoint.z);
+    log_d("Output\t\tx:%7.2f, y:%7.2f, z:%7.2f\n", output.x, output.y, output.z);
     delay(500);
 }

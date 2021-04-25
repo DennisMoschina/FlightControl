@@ -6,14 +6,36 @@
 
 #include <Arduino.h>
 
-#include <type_traits>
-
 template<typename T> struct AxisData {
     static_assert(std::is_arithmetic<T>::value, "T must be numeric");
 
     T x;
     T y;
     T z;
+
+    T& operator[](std::size_t idx) {
+        assert(idx >= 0 && idx < 3);
+        switch (idx) {
+            case 0:
+                return this->x;
+            case 1:
+                return this->y;
+            case 2:
+                return this->z;
+        }
+    }
+
+    const T& operator[](std::size_t idx) const {
+        assert(idx >= 0 && idx < 3);
+        switch (idx) {
+            case 0:
+                return this->*x;
+            case 1:
+                return this->*y;
+            case 2:
+                return this->*z;
+        }
+    }
 
     struct AxisData<T>& operator=(const T coords[3]) {
         this->x = coords[0];
@@ -70,22 +92,29 @@ template<typename T> struct AxisData {
         this->z *= k;
         return *this;
     }
+
+
+    friend AxisData<T> operator+(AxisData<T> lhs, const AxisData<T>& rhs) {
+        return lhs += rhs;
+    }
+    friend AxisData<T> operator+(AxisData<T> lhs, const T& k) {
+        return lhs += k;
+    }
+
+    friend AxisData<T> operator-(AxisData<T> lhs, const AxisData<T>& rhs) {
+        return lhs -= rhs;
+    }
+    friend AxisData<T> operator-(AxisData<T> lhs, const T& k) {
+        return lhs -= k;
+    }
+
+    friend AxisData<T> operator*(AxisData<T> lhs, const AxisData<T>& rhs) {
+        return lhs *= rhs;
+    }
+    friend AxisData<T> operator*(AxisData<T> lhs, const T& k) {
+        return lhs *= k;
+    }
 };
-
-template<typename T>
-AxisData<T> operator+(AxisData<T> lhs, const AxisData<T>& rhs);
-template<typename T>
-AxisData<T> operator+(AxisData<T> lhs, T& k);
-
-template<typename T>
-AxisData<T> operator-(AxisData<T> lhs, const AxisData<T>& rhs);
-template<typename T>
-AxisData<T> operator-(AxisData<T> lhs, T& k);
-
-template<typename T>
-AxisData<T> operator*(AxisData<T> lhs, const AxisData<T>& rhs);
-template<typename T>
-AxisData<T> operator*(AxisData<T> lhs, T& k);
 
 typedef AxisData<RAW_DATA_TYPE> RawAxisData;
 typedef AxisData<ROTATION_DATA_TYPE> RotationData;

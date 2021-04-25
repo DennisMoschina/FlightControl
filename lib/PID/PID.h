@@ -16,7 +16,7 @@ public:
      * @param processVariable the current angular rate
      * @return the angular rate to counteract the error
      */
-    RotationData loop(RotationData setpoint, RotationData processVariable);
+    RotationData loop(RotationData setpoint, RotationData rotationRate);
 
     void setPGain(float x, float y, float z);
     void setIGain(float x, float y, float z);
@@ -28,6 +28,10 @@ private:
     CorrectionData gainD;
 
     CorrectionData relaxI;
+
+    RotationData termIInterval;
+
+    RotationData oldRotationRate;
 };
 
 #endif
