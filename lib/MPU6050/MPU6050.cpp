@@ -69,6 +69,10 @@ RotationData MPU6050::getRotation() {
     return rotation;
 }
 
+void MPU6050::setGyroOffset(RawAxisData offset) {
+    this->gyroOffset = offset;
+}
+
 void MPU6050::setGyroXOffset(RAW_DATA_TYPE offset) {
     this->gyroOffset.x = offset;
 }
@@ -79,6 +83,10 @@ void MPU6050::setGyroYOffset(RAW_DATA_TYPE offset) {
 
 void MPU6050::setGyroZOffset(RAW_DATA_TYPE offset) {
     this->gyroOffset.z = offset;
+}
+
+void MPU6050::setAccelOffset(RawAxisData offset) {
+    this->accelOffset = offset;
 }
 
 void MPU6050::setAccelXOffset(RAW_DATA_TYPE offset) {

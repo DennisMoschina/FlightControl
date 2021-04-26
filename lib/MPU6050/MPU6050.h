@@ -19,19 +19,38 @@
 
 #define DEGREE_PER_SECOND 131
 
+/**
+ * Communicate with the MPU6050 sensor easily.
+ */
 class MPU6050 {
 public:
     MPU6050(byte sda = 21, byte scl = 22);
     void begin();
 
+    /**
+     * Read the raw gyro data of the MPU6050 sensor with the offsets removed.
+     * @return the gyro data with corrected offsets
+     */
     RawAxisData readGyro();
+    /**
+     * Read the raw accelerometer data of the MPU6050 sensor with the offsets removed.
+     * @return the accelerometer data with corrected offsets
+     */
     RawAxisData readAccel();
 
+    /**
+     * Get the rotation rate in degrees per second.
+     * @return rotation rate in deg/sec
+     */
     RotationData getRotation();
+
+    void setGyroOffset(RawAxisData offset);
 
     void setGyroXOffset(RAW_DATA_TYPE offset);
     void setGyroYOffset(RAW_DATA_TYPE offset);
     void setGyroZOffset(RAW_DATA_TYPE offset);
+
+    void setAccelOffset(RawAxisData offset);
 
     void setAccelXOffset(RAW_DATA_TYPE offset);
     void setAccelYOffset(RAW_DATA_TYPE offset);
