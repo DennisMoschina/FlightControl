@@ -9,6 +9,8 @@
 
 #include <ESP32Servo.h>
 
+#include <OTAManagement.h>
+
 #define RUDDER_INPUT_PIN 14
 #define RUDDER_OUTPUT_PIN 15
 
@@ -48,6 +50,8 @@ Servo elevatorServo;
 
 void setup() {
     Serial.begin(115200);
+
+    startOTA();
 
     mpu.begin();
 
