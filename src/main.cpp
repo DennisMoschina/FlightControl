@@ -11,6 +11,7 @@
 
 #include <OTAManagement.h>
 
+
 #define RUDDER_INPUT_PIN 14
 #define RUDDER_OUTPUT_PIN 15
 
@@ -28,8 +29,8 @@
 // #define RUDDER_MAX 2000 //1871
 
 #define RUDDER_DIRECTION 0
-#define AILE_DIRECTION 1
-#define ELEV_DIRECTION 2
+#define AILE_DIRECTION 2
+#define ELEV_DIRECTION 1
 
 
 int16_t MAX_YAW_RATE = 360;
@@ -41,12 +42,12 @@ ServoInputPin<RUDDER_INPUT_PIN> rudderInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<ELEVATOR_INPUT_PIN> elevatorInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<AILE_INPUT_PIN> aileInput(SERVO_MIN, SERVO_MAX);
 
-MPU6050 mpu = MPU6050();
-PID pid;
-
 Servo rudderServo;
 Servo aileServo;
 Servo elevatorServo;
+
+MPU6050 mpu = MPU6050();
+PID pid;
 
 void setup() {
     Serial.begin(115200);
@@ -56,7 +57,7 @@ void setup() {
     mpu.begin();
 
     while (!ServoInput.available()) {  // wait for all signals to be ready
-		log_i("Waiting for servo signals...");
+		ESP_LOGI("tag","Waiting for servo signals...");
 		delay(500);
 	}
 
@@ -65,11 +66,21 @@ void setup() {
 	ESP32PWM::allocateTimer(2);
 	ESP32PWM::allocateTimer(3);
 	rudderServo.setPeriodHertz(50);
-	rudderServo.attach(RUDDER_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    rudderServo.attach(RUDDER_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
     aileServo.setPeriodHertz(50);
-    aileServo.attach(RUDDER_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    aileServo.attach(AILE_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
     elevatorServo.setPeriodHertz(50);
-    elevatorServo.attach(RUDDER_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    elevatorServo.attach(ELEVATOR_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+
+    rudderServo.write(0);
+    aileServo.write(0);
+    elevatorServo.write(0);
+
+    delay(2000);
+
+    rudderServo.write(180);
+    aileServo.write(180);
+    elevatorServo.write(180);
 }
 
 void loop() {
@@ -97,6 +108,8 @@ void loop() {
     log_d("Output\t\tx:%7.2f, y:%7.2f, z:%7.2f\n", output.x, output.y, output.z);
 
     rudderServo.write(output[RUDDER_DIRECTION]);
+    aileServo.write(output[AILE_DIRECTION]);
+    elevatorServo.write(output[ELEV_DIRECTION]);
 
     delay(20);
 }
