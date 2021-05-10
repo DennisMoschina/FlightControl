@@ -9,8 +9,11 @@
 
 #include <ESP32Servo.h>
 
-#include <OTAManagement.h>
+// #include <OTAManagement.h>
 
+#include <OutputCalculator.h>
+
+#define GEAR_INPUT_PIN 27
 
 #define RUDDER_INPUT_PIN 14
 #define RUDDER_OUTPUT_PIN 15
@@ -34,9 +37,12 @@
 
 
 int16_t MAX_YAW_RATE = 360;
-int16_t MAX_PITCH_RATE  =360;
+int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
 
+RotationData maxRates = {MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE};
+
+ServoInputPin<GEAR_INPUT_PIN> gearInput(SERVO_MIN, SERVO_MAX);
 
 ServoInputPin<RUDDER_INPUT_PIN> rudderInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<ELEVATOR_INPUT_PIN> elevatorInput(SERVO_MIN, SERVO_MAX);
@@ -47,12 +53,15 @@ Servo aileServo;
 Servo elevatorServo;
 
 MPU6050 mpu = MPU6050();
-PID pid;
+PID pid = PID();
+
+OutputCalculator outputCalculator(maxRates, &mpu, &pid);
+
 
 void setup() {
     Serial.begin(115200);
 
-    startOTA();
+    // startOTA();
 
     mpu.begin();
 
@@ -75,41 +84,21 @@ void setup() {
     rudderServo.write(0);
     aileServo.write(0);
     elevatorServo.write(0);
-
-    delay(2000);
-
-    rudderServo.write(180);
-    aileServo.write(180);
-    elevatorServo.write(180);
 }
 
 void loop() {
-    RotationData setpoint;
-    float rudderAngle = rudderInput.getAngle();
-    float elevAngle = elevatorInput.getAngle();
-    float aileAngle = aileInput.getAngle();
+    outputCalculator.setCalculate(gearInput.getBoolean());
 
-    log_d("Rudder:\t%9.2fº", rudderAngle);
-    log_d("Elevator:\t%9.2fº", elevAngle);
-    log_d("Aileron:\t%9.2fº", aileAngle);
+    RotationData servoInput;
+    servoInput[RUDDER_DIRECTION] = rudderInput.getAngle();
+    servoInput[AILE_DIRECTION] = aileInput.getAngle();
+    servoInput[ELEV_DIRECTION] = elevatorInput.getAngle();
 
-    setpoint[RUDDER_DIRECTION] = map(rudderAngle, 0, 180, -MAX_YAW_RATE, MAX_YAW_RATE);
-    setpoint[ELEV_DIRECTION] = map(elevAngle, 0, 180, -MAX_PITCH_RATE, MAX_PITCH_RATE);
-    setpoint[AILE_DIRECTION] = map(aileAngle, 0, 180, -MAX_ROLL_RATE, MAX_ROLL_RATE);
-
-    RotationData gyroReadings = mpu.getRotation();
-    RotationData output = pid.loop(setpoint, gyroReadings);
-    output[RUDDER_DIRECTION] = map(output[RUDDER_DIRECTION], -MAX_YAW_RATE, MAX_YAW_RATE, 0, 180);
-    output[ELEV_DIRECTION] = map(output[ELEV_DIRECTION], -MAX_PITCH_RATE, MAX_PITCH_RATE, 0, 180);
-    output[AILE_DIRECTION] = map(output[AILE_DIRECTION], -MAX_ROLL_RATE, MAX_ROLL_RATE, 0, 180);
-
-    log_d("Gyro\t\tx:%7.2f, y:%7.2f, z:%7.2f", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    log_d("Setpoint\tx:%7.2f, y:%7.2f, z:%7.2f", setpoint.x, setpoint.y, setpoint.z);
-    log_d("Output\t\tx:%7.2f, y:%7.2f, z:%7.2f\n", output.x, output.y, output.z);
+    RotationData output = outputCalculator.calculateOutput(servoInput);
 
     rudderServo.write(output[RUDDER_DIRECTION]);
     aileServo.write(output[AILE_DIRECTION]);
     elevatorServo.write(output[ELEV_DIRECTION]);
 
-    delay(20);
+    // delay(20); //todo remove delay
 }
