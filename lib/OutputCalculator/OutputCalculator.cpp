@@ -18,7 +18,7 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
 
 
     RotationData gyroReadings = rotationReader->getRotation();
-    RotationData output = pid->loop(servoInput, gyroReadings);
+    RotationData output = pid->loop(setpoint, gyroReadings);
     output.x = map(output.x, -this->maxRates.x, this->maxRates.x, 0, 180);
     output.y = map(output.y, -this->maxRates.y, this->maxRates.y, 0, 180);
     output.z = map(output.z, -this->maxRates.z, this->maxRates.z, 0, 180);
