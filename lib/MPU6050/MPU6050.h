@@ -5,7 +5,7 @@
 
 #include <Wire.h>
 
-#include <AxisData.h>
+#include <RotationReader.h>
 
 #define MPU_ADDR 0x68
 #define POWER_MANAGEMENT_REGISTER 0x6B
@@ -22,7 +22,7 @@
 /**
  * Communicate with the MPU6050 sensor easily.
  */
-class MPU6050 {
+class MPU6050 : public virtual RotationReader {
 public:
     MPU6050(byte sda = 21, byte scl = 22);
     void begin();
