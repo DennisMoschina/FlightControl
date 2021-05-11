@@ -56,6 +56,9 @@ public:
     void setAccelYOffset(RAW_DATA_TYPE offset);
     void setAccelZOffset(RAW_DATA_TYPE offset);
 
+    void remapAxis(byte from, byte to);
+    void remapAxis(AxisData<byte> to);
+
 private:
     RawAxisData gyroOffset;
     RawAxisData accelOffset;
@@ -63,6 +66,8 @@ private:
     RawAxisData readAxisData(int registerPos);
 
     RawAxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
+
+    AxisData<byte> axisMap;
 };
 
 #endif

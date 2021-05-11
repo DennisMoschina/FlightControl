@@ -2,6 +2,7 @@
 
 MPU6050::MPU6050(byte sda, byte scl) {
     Wire.begin(sda, scl);
+    for (int i = 0; i < 3; i++) this->remapAxis(i, i);
 }
 
 void MPU6050::begin() {
@@ -52,9 +53,9 @@ RawAxisData MPU6050::readAxisData(int registerPos) {
     Wire.requestFrom(MPU_ADDR, AXIS_DATA_REGISTER_SIZE);
 
     while (Wire.available() < AXIS_DATA_REGISTER_SIZE);
-    data.x = Wire.read() << 8 | Wire.read();
-    data.y = Wire.read() << 8 | Wire.read();
-    data.z = Wire.read() << 8 | Wire.read();
+    data[this->axisMap.x] = Wire.read() << 8 | Wire.read();
+    data[this->axisMap.y] = Wire.read() << 8 | Wire.read();
+    data[this->axisMap.z] = Wire.read() << 8 | Wire.read();
 
     return data;
 }
@@ -102,6 +103,13 @@ void MPU6050::setAccelZOffset(RAW_DATA_TYPE offset) {
 }
 
 
+void MPU6050::remapAxis(byte from, byte to) {
+    this->axisMap[from] = to;
+}
+
+void MPU6050::remapAxis(AxisData<byte> to) {
+    this->axisMap = to;
+}
 
 RawAxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
     RAW_DATA_TYPE x[numberOfReadings];

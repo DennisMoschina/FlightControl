@@ -31,16 +31,11 @@
 // #define RUDDER_MIN 1000 //1068
 // #define RUDDER_MAX 2000 //1871
 
-#define RUDDER_DIRECTION 0
-#define AILE_DIRECTION 2
-#define ELEV_DIRECTION 1
-
-
 int16_t MAX_YAW_RATE = 360;
 int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
 
-RotationData maxRates = {MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE};
+RotationData maxRates {MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE};
 
 ServoInputPin<GEAR_INPUT_PIN> gearInput(SERVO_MIN, SERVO_MAX);
 
@@ -60,6 +55,11 @@ OutputCalculator outputCalculator(maxRates, &mpu, &pid);
 
 void setup() {
     Serial.begin(115200);
+
+    mpu.remapAxis(0, 1);
+    mpu.remapAxis(1, 0);
+
+    pid.setAxisInvert({false, false, true});
 
     // startOTA();
 
@@ -90,15 +90,15 @@ void loop() {
     outputCalculator.setCalculate(gearInput.getBoolean());
 
     RotationData servoInput;
-    servoInput[RUDDER_DIRECTION] = rudderInput.getAngle();
-    servoInput[AILE_DIRECTION] = aileInput.getAngle();
-    servoInput[ELEV_DIRECTION] = elevatorInput.getAngle();
+    servoInput.yaw = rudderInput.getAngle();
+    servoInput.roll = aileInput.getAngle();
+    servoInput.pitch = elevatorInput.getAngle();
 
     RotationData output = outputCalculator.calculateOutput(servoInput);
 
-    rudderServo.write(output[RUDDER_DIRECTION]);
-    aileServo.write(output[AILE_DIRECTION]);
-    elevatorServo.write(output[ELEV_DIRECTION]);
+    rudderServo.write(output.yaw);
+    aileServo.write(output.roll);
+    elevatorServo.write(output.pitch);
 
     // delay(20); //todo remove delay
 }
