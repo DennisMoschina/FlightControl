@@ -22,6 +22,9 @@ public:
     void setIGain(float x, float y, float z);
     void setDGain(float x, float y, float z);
 
+    void setAxisInvert(byte axis, boolean invert);
+    void setAxisInvert(AxisData<boolean> invert);
+
 private:
     CorrectionData gainP;
     CorrectionData gainI;
@@ -32,6 +35,8 @@ private:
     RotationData termIInterval;
 
     RotationData oldRotationRate;
+
+    AxisData<boolean> axisInvert;
 };
 
 #endif

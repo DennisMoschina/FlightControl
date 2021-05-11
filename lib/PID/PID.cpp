@@ -11,6 +11,8 @@ PID::PID() {
     this->gainI = DEFAULT_I_GAIN;
     this->gainD = DEFAULT_D_GAIN;
     this->relaxI = DEFAULT_I_RELAX;
+
+    this->axisInvert = true;
 }
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
@@ -33,6 +35,16 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
         }
     }
 
-    RotationData output = (termP + termI + termD) * (float) -1;
+    RotationData output = (termP + termI + termD);
+    for (int i = 0; i < 3; i++) output[i] *= this->axisInvert[i] ? -1 : 1;
     return output;
+}
+
+
+void PID::setAxisInvert(byte axis, boolean invert) {
+    this->axisInvert[axis] = invert;
+}
+
+void PID::setAxisInvert(AxisData<boolean> invert) {
+    this->axisInvert = invert;
 }
