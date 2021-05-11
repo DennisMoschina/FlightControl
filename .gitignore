@@ -3,3 +3,4 @@
 .gcc-flags.json
 terminalOutput/output.txt
 include/WiFiResources.h
+.DS_Store
