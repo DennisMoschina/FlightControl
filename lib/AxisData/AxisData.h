@@ -5,13 +5,25 @@
 #define ROTATION_DATA_TYPE float
 
 #include <Arduino.h>
+#include <stdexcept>
+
 
 template<typename T> struct AxisData {
     static_assert(std::is_arithmetic<T>::value, "T must be numeric");
 
-    T x;
-    T y;
-    T z;
+    union {
+        T x;
+        T yaw;
+    };
+    union {
+        T y;
+        T pitch;
+    };
+    union {
+        T z;
+        T roll;
+    };
+
 
     T& operator[](std::size_t idx) {
         assert(idx >= 0 && idx < 3);
@@ -23,6 +35,7 @@ template<typename T> struct AxisData {
             case 2:
                 return this->z;
         }
+        throw std::invalid_argument("Invalid axis!");
     }
 
     const T& operator[](std::size_t idx) const {
@@ -35,6 +48,7 @@ template<typename T> struct AxisData {
             case 2:
                 return this->*z;
         }
+        throw std::invalid_argument("Invalid axis!");
     }
 
     struct AxisData<T>& operator=(const T coords[3]) {
