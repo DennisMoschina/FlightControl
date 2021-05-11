@@ -51,56 +51,49 @@ template<typename T> struct AxisData {
         throw std::invalid_argument("Invalid axis!");
     }
 
-    struct AxisData<T>& operator=(const T coords[3]) {
-        this->x = coords[0];
-        this->y = coords[1];
-        this->z = coords[2];
-        return *this;
-    }
-
-    struct AxisData<T>& operator=(const T& coords) {
+    inline AxisData<T>& operator=(const T& coords) {
         this->x = coords;
         this->y = coords;
         this->z = coords;
         return *this;
     }
 
-    struct AxisData<T>& operator+=(const AxisData<T>& rhs) {
+    inline AxisData<T>& operator+=(const AxisData<T>& rhs) {
         this->x += rhs.x;
         this->y += rhs.y;
         this->z += rhs.z;
         return *this;
     }
 
-    struct AxisData<T>& operator+=(const T& k) {
+    inline AxisData<T>& operator+=(const T& k) {
         this->x += k;
         this->y += k;
         this->z += k;
         return *this;
     }
 
-    struct AxisData<T>& operator-=(const AxisData<T>& rhs) {
+    inline AxisData<T>& operator-=(const AxisData<T>& rhs) {
         this->x -= rhs.x;
         this->y -= rhs.y;
         this->z -= rhs.z;
         return *this;
     }
 
-    struct AxisData<T>& operator-=(const T& k) {
+    inline AxisData<T>& operator-=(const T& k) {
         this->x -= k;
         this->y -= k;
         this->z -= k;
         return *this;
     }
 
-    struct AxisData<T>& operator*=(const AxisData<T>& rhs) {
+    inline AxisData<T>& operator*=(const AxisData<T>& rhs) {
         this->x *= rhs.x;
         this->y *= rhs.y;
         this->z *= rhs.z;
         return *this;
     }
 
-    struct AxisData<T>& operator*=(const T& k) {
+    inline AxisData<T>& operator*=(const T& k) {
         this->x *= k;
         this->y *= k;
         this->z *= k;
