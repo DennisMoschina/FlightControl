@@ -87,9 +87,6 @@ void setup() {
 }
 
 void loop() {
-    /**
-     * servo -100 to 100
-     */
     outputCalculator.setCalculate(gearInput.getBoolean());
 
     RotationData servoInput;
@@ -103,5 +100,5 @@ void loop() {
     aileServo.write(output.roll);
     elevatorServo.write(output.pitch);
 
-    //todo bring loop to 50Hz
+    delay(20);
 }
