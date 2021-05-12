@@ -12,6 +12,10 @@ public:
     RotationData calculateOutput(RotationData servoInput);
 
     void setCalculate(boolean shouldCalculate);
+
+    void setServoMiddle(AxisData<int> servoMiddle);
+    void setServoMiddle(byte axis, int servoMiddle);
+
 private:
     PID* pid;
     RotationReader* rotationReader;
@@ -19,6 +23,11 @@ private:
     RotationData maxRates;
 
     boolean shouldCalculate = true;
+
+    AxisData<int> servoMiddle;
+    AxisData<int> servoRange;
+
+    RotationData remapOutput(RotationData output);
 };
 
 #endif

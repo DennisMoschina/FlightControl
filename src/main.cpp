@@ -35,7 +35,7 @@ int16_t MAX_YAW_RATE = 360;
 int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
 
-RotationData maxRates {MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE};
+RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
 
 ServoInputPin<GEAR_INPUT_PIN> gearInput(SERVO_MIN, SERVO_MAX);
 
@@ -87,12 +87,15 @@ void setup() {
 }
 
 void loop() {
+    /**
+     * servo -100 to 100
+     */
     outputCalculator.setCalculate(gearInput.getBoolean());
 
     RotationData servoInput;
-    servoInput.yaw = rudderInput.getAngle();
-    servoInput.roll = aileInput.getAngle();
-    servoInput.pitch = elevatorInput.getAngle();
+    servoInput.yaw = rudderInput.map(-100, 100);
+    servoInput.roll = aileInput.map(-100, 100);
+    servoInput.pitch = elevatorInput.map(-100, 100);
 
     RotationData output = outputCalculator.calculateOutput(servoInput);
 
@@ -100,5 +103,5 @@ void loop() {
     aileServo.write(output.roll);
     elevatorServo.write(output.pitch);
 
-    // delay(20); //todo remove delay
+    //todo bring loop to 50Hz
 }

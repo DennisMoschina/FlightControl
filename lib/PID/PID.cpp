@@ -41,7 +41,11 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
     }
 
     RotationData output = termP + termI + termD + setpoint * this->feedForward;
-    for (int i = 0; i < 3; i++) output[i] *= this->axisInvert[i] ? -1 : 1;
+    for (int i = 0; i < 3; i++) {
+        output[i] *= this->axisInvert[i] ? -1 : 1;
+        if (output[i] > 100) output[i] = 100;
+        else if (output[i] < -100) output[i] = -100;
+    }
     return output;
 }
 
