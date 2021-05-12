@@ -9,7 +9,7 @@
 
 #include <ESP32Servo.h>
 
-// #include <OTAManagement.h>
+#include <OTAManagement.h>
 
 #include <OutputCalculator.h>
 
@@ -61,7 +61,7 @@ void setup() {
 
     pid.setAxisInvert({false, false, true});
 
-    // startOTA();
+    startOTA();
 
     mpu.begin();
 

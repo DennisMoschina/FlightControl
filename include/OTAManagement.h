@@ -10,21 +10,24 @@
 
 #include <WiFiResources.h>
 
+#define OTA_LOG "ota"
+
 TaskHandle_t otaHandler;
 
 void handleOTA(void * parameter) {
     for (;;) {
         ArduinoOTA.handle();
+        delay(100);
     }
 }
 
-void startOTA() {
-    log_i("Booting");
+void setupOTA(void * parameter) {
+    ESP_LOGI("Booting");
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-        log_e("Connection Failed! Rebooting...");
-        delay(5000);
+        ESP_LOGE(OTA_LOG, "Connection Failed! Rebooting...");
+        delay(1000);
         ESP.restart();
     }
 
@@ -33,27 +36,46 @@ void startOTA() {
         String type = ArduinoOTA.getCommand() == U_FLASH ? "sketch" : "filesystem";
 
         // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-        log_d("Start updating %s", type);
+        ESP_LOGD(OTA_LOG, "Start updating %s", type);
     })
     .onEnd([]() {
-        log_i("\nEnd");
+        ESP_LOGI(OTA_LOG, "\nEnd");
     })
-    .onProgress([](unsigned int progress, unsigned int total) {
-        log_i("Progress: %u%%\r", (progress / (total / 100)));
+    .onProgress([] (unsigned int progress, unsigned int total) {
+        ESP_LOGI(OTA_LOG, "Progress: %u%%\r", (progress / (total / 100)));
     })
     .onError([](ota_error_t error) {
-        log_e("Error[%u]: ", error);
-        if (error == OTA_AUTH_ERROR) log_e("Auth Failed");
-        else if (error == OTA_BEGIN_ERROR) log_e("Begin Failed");
-        else if (error == OTA_CONNECT_ERROR) log_e("Connect Failed");
-        else if (error == OTA_RECEIVE_ERROR) log_e("Receive Failed");
-        else if (error == OTA_END_ERROR) log_e("End Failed");
+        ESP_LOGE(OTA_LOG, "Error[%u]: ", error);
+
+        const char* errorMsg;
+        if (error == OTA_AUTH_ERROR)            errorMsg = "Auth Failed";
+        else if (error == OTA_BEGIN_ERROR)      errorMsg = "Begin Failed";
+        else if (error == OTA_CONNECT_ERROR)    errorMsg = "Connect Failed";
+        else if (error == OTA_RECEIVE_ERROR)    errorMsg = "Receive Failed";
+        else if (error == OTA_END_ERROR)        errorMsg = "End Failed";
+
+        ESP_LOGE(OTA_LOG, "%s", errorMsg);
     });
 
     ArduinoOTA.begin();
 
-    log_i("Ready");
-    log_i("IP address: %s", WiFi.localIP().toString().c_str());
+    ESP_LOGD(OTA_LOG, "Ready");
+    ESP_LOGI(OTA_LOG, "IP address: %s", WiFi.localIP().toString().c_str());
+
+    vTaskDelete(NULL);
+}
+
+void startOTA() {
+    TaskHandle_t otaSetupHandle;
+
+    //todo use correct stack size
+    xTaskCreatePinnedToCore(setupOTA,
+        "setup OTA",
+        10000,
+        NULL,
+        0,
+        &otaSetupHandle,
+        0);
 
     xTaskCreatePinnedToCore(
       handleOTA, /* Function to implement the task */
