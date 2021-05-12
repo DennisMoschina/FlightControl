@@ -8,7 +8,7 @@
 
 #define DEFAULT_I_RELAX 0.995
 
-#define DEFAULT_ANTI_WINDUP 500
+#define DEFAULT_ANTI_WINDUP 100
 
 PID::PID() {
     this->gainP = DEFAULT_P_GAIN;

@@ -5,10 +5,10 @@
 #define DEFAULT_SERVO_MIDDLE 1500
 #define DEFAULT_SERVO_RANGE 1000
 
-OutputCalculator::OutputCalculator(RotationData maxRates, RotationReader* rotationReader, PID* pid) {
+OutputCalculator::OutputCalculator(RotationData maxRates, RotationReader* rotationReader, Stabilizer* stabilizer) {
     this->maxRates = maxRates;
     this->rotationReader = rotationReader;
-    this->pid = pid;
+    this->stabilizer = stabilizer;
 
     this->servoMiddle = DEFAULT_SERVO_MIDDLE;
     this->servoRange = DEFAULT_SERVO_RANGE;
@@ -24,7 +24,7 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
 
 
     RotationData gyroReadings = rotationReader->getRotation();
-    RotationData output = pid->loop(setpoint, gyroReadings);
+    RotationData output = stabilizer->loop(setpoint, gyroReadings);
 
     output = this->remapOutput(output);
 

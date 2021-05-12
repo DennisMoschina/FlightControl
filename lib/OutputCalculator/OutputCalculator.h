@@ -2,12 +2,12 @@
 #define _OUTPUT_CALCULATOR_H
 
 #include <AxisData.h>
-#include <PID.h>
+#include <Stabilizer.h>
 #include <RotationReader.h>
 
 class OutputCalculator {
 public:
-    OutputCalculator(RotationData maxRates, RotationReader* rotationReader, PID* pid);
+    OutputCalculator(RotationData maxRates, RotationReader* rotationReader, Stabilizer* stabilizer);
 
     RotationData calculateOutput(RotationData servoInput);
 
@@ -17,7 +17,7 @@ public:
     void setServoMiddle(byte axis, int servoMiddle);
 
 private:
-    PID* pid;
+    Stabilizer* stabilizer;
     RotationReader* rotationReader;
 
     RotationData maxRates;

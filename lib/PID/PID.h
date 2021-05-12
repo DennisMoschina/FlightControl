@@ -5,9 +5,11 @@
 
 #include <AxisData.h>
 
+#include <Stabilizer.h>
+
 typedef AxisData<float> CorrectionData;
 
-class PID {
+class PID: public Stabilizer {
 public:
     PID();
     /**
