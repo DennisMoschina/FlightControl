@@ -1,15 +1,14 @@
 #include <Arduino.h>
 
-#include <map>
 #include <Wire.h>
+
+#include <Bluetooth/Bluetooth.h>
 
 #include <ServoInput.h>
 #include <MPU6050.h>
 #include <PID.h>
 
 #include <ESP32Servo.h>
-
-// #include <OTAManagement.h>
 
 #include <OutputCalculator.h>
 
@@ -56,12 +55,12 @@ OutputCalculator outputCalculator(maxRates, &mpu, &pid);
 void setup() {
     Serial.begin(115200);
 
+    startBluetooth();
+
     mpu.remapAxis(0, 1);
     mpu.remapAxis(1, 0);
 
     pid.setAxisInvert({false, false, true});
-
-    // startOTA();
 
     mpu.begin();
 
