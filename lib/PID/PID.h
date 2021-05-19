@@ -7,7 +7,7 @@
 
 #include <Stabilizer.h>
 
-typedef AxisData<float> CorrectionData;
+typedef AxisData<ROTATION_DATA_TYPE> CorrectionData;
 
 class PID: public Stabilizer {
 public:

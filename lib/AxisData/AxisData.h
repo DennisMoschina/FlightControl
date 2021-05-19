@@ -2,7 +2,7 @@
 #define _AXIS_DATA_H
 
 #define RAW_DATA_TYPE int16_t
-#define ROTATION_DATA_TYPE float
+#define ROTATION_DATA_TYPE int
 
 #include <Arduino.h>
 #include <stdexcept>
