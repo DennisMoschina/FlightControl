@@ -9,8 +9,6 @@
 
 #include <ESP32Servo.h>
 
-#include <OTAManagement.h>
-
 #include <OutputCalculator.h>
 
 #define GEAR_INPUT_PIN 27
@@ -60,8 +58,6 @@ void setup() {
     mpu.remapAxis(1, 0);
 
     pid.setAxisInvert({false, false, true});
-
-    startOTA();
 
     mpu.begin();
 
