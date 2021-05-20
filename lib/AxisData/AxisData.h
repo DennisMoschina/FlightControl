@@ -9,8 +9,6 @@
 
 
 template<typename T> struct AxisData {
-    static_assert(std::is_arithmetic<T>::value, "T must be numeric");
-
     union {
         T x;
         T yaw;
@@ -26,6 +24,7 @@ template<typename T> struct AxisData {
 
 
     T& operator[](std::size_t idx) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         assert(idx >= 0 && idx < 3);
         switch (idx) {
             case 0:
@@ -59,6 +58,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator+=(const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x += rhs.x;
         this->y += rhs.y;
         this->z += rhs.z;
@@ -66,6 +66,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator+=(const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x += k;
         this->y += k;
         this->z += k;
@@ -73,6 +74,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator-=(const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x -= rhs.x;
         this->y -= rhs.y;
         this->z -= rhs.z;
@@ -80,6 +82,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator-=(const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x -= k;
         this->y -= k;
         this->z -= k;
@@ -87,6 +90,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator*=(const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x *= rhs.x;
         this->y *= rhs.y;
         this->z *= rhs.z;
@@ -94,6 +98,7 @@ template<typename T> struct AxisData {
     }
 
     inline AxisData<T>& operator*=(const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         this->x *= k;
         this->y *= k;
         this->z *= k;
@@ -102,23 +107,29 @@ template<typename T> struct AxisData {
 
 
     friend AxisData<T> operator+(AxisData<T> lhs, const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs += rhs;
     }
     friend AxisData<T> operator+(AxisData<T> lhs, const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs += k;
     }
 
     friend AxisData<T> operator-(AxisData<T> lhs, const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs -= rhs;
     }
     friend AxisData<T> operator-(AxisData<T> lhs, const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs -= k;
     }
 
     friend AxisData<T> operator*(AxisData<T> lhs, const AxisData<T>& rhs) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs *= rhs;
     }
     friend AxisData<T> operator*(AxisData<T> lhs, const T& k) {
+        static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         return lhs *= k;
     }
 };
