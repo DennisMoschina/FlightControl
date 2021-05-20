@@ -10,6 +10,9 @@
 #include <ESP32Servo.h>
 
 #include <OutputCalculator.h>
+#include <Controller.h>
+
+#include <Switch.h>
 
 #define GEAR_INPUT_PIN 27
 
@@ -40,16 +43,37 @@ ServoInputPin<GEAR_INPUT_PIN> gearInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<RUDDER_INPUT_PIN> rudderInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<ELEVATOR_INPUT_PIN> elevatorInput(SERVO_MIN, SERVO_MAX);
 ServoInputPin<AILE_INPUT_PIN> aileInput(SERVO_MIN, SERVO_MAX);
+ServoInputReader servoInputs(AxisData<ServoInputSignal*> { &rudderInput, &elevatorInput, &aileInput });
 
 Servo rudderServo;
 Servo aileServo;
 Servo elevatorServo;
+AxisData<Servo*> servos { &rudderServo, &elevatorServo, &aileServo };
 
 MPU6050 mpu = MPU6050();
 PID pid = PID();
 
 OutputCalculator outputCalculator(maxRates, &mpu, &pid);
 
+class PIDSwitch : public Switch {
+public:
+    PIDSwitch(ServoInputSignal* switchServo) {
+        this->switchServo = switchServo;
+    }
+
+    boolean getBoolean() {
+        return this->switchServo->getBoolean();
+    }
+
+private:
+    ServoInputSignal* switchServo;
+};
+
+PIDSwitch pidSwitch = PIDSwitch(&gearInput);
+
+Controller controller(&outputCalculator, servos,
+                &servoInputs,
+                &pidSwitch);
 
 void setup() {
     Serial.begin(115200);
@@ -77,24 +101,7 @@ void setup() {
     elevatorServo.setPeriodHertz(50);
     elevatorServo.attach(ELEVATOR_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
 
-    rudderServo.write(0);
-    aileServo.write(0);
-    elevatorServo.write(0);
+    controller.begin();
 }
 
-void loop() {
-    outputCalculator.setCalculate(gearInput.getBoolean());
-
-    RotationData servoInput;
-    servoInput.yaw = rudderInput.map(-100, 100);
-    servoInput.roll = aileInput.map(-100, 100);
-    servoInput.pitch = elevatorInput.map(-100, 100);
-
-    RotationData output = outputCalculator.calculateOutput(servoInput);
-
-    rudderServo.write(output.yaw);
-    aileServo.write(output.roll);
-    elevatorServo.write(output.pitch);
-
-    delay(20);
-}
+void loop() {}

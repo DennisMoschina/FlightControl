@@ -3,7 +3,7 @@
 
 class Switch {
 public:
-    virtual boolean getBoolean();
+    virtual boolean getBoolean() = 0;
 };
 
 #endif
