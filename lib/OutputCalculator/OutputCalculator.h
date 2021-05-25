@@ -9,12 +9,14 @@ class OutputCalculator {
 public:
     OutputCalculator(RotationData maxRates, RotationReader* rotationReader, Stabilizer* stabilizer);
 
+    /**
+     * Calculate the output to match the steering signals.
+     * @param servoInput the steering signal in percent of the maximum rates
+     * @return the signal to output in percent to match the steering signal
+     */
     RotationData calculateOutput(RotationData servoInput);
 
     void setCalculate(boolean shouldCalculate);
-
-    void setServoMiddle(AxisData<int> servoMiddle);
-    void setServoMiddle(byte axis, int servoMiddle);
 
 private:
     Stabilizer* stabilizer;
@@ -23,11 +25,6 @@ private:
     RotationData maxRates;
 
     boolean shouldCalculate = true;
-
-    AxisData<int> servoMiddle;
-    AxisData<int> servoRange;
-
-    RotationData remapOutput(RotationData output);
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include <Controller.h>
 
 Controller::Controller(OutputCalculator* outputCalculator,
-                AxisData<Servo*> outputServos,
+                AxisData<RotationRateOutput*> outputServos,
                 ServoInputReader* servoInputs,
                 Switch* pidSwitch) {
     this->outputCalculator = outputCalculator;
@@ -20,12 +20,13 @@ void Controller::control() {
     this->outputCalculator->setCalculate(this->pidSwitch->getBoolean());
 
     RotationData servoInput = this->servoInputs->readInput();
+    log_d("Input\t\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
 
     RotationData output = this->outputCalculator->calculateOutput(servoInput);
 
-    this->outputServos.x->write(output.yaw);
-    this->outputServos.roll->write(output.roll);
-    this->outputServos.pitch->write(output.pitch);
+    this->outputServos.x->write(output.x);
+    this->outputServos.y->write(output.y);
+    this->outputServos.z->write(output.z);
 
     delay(20);
 }

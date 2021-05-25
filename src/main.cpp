@@ -14,6 +14,9 @@
 
 #include <Switch.h>
 
+#include <RotationRateOuput.h>
+#include <SingleServoOutput.h>
+
 #define GEAR_INPUT_PIN 27
 
 #define RUDDER_INPUT_PIN 14
@@ -29,8 +32,6 @@
 #define SERVO_MIN 1000
 #define SERVO_MAX 2000
 
-// #define RUDDER_MIN 1000 //1068
-// #define RUDDER_MAX 2000 //1871
 
 int16_t MAX_YAW_RATE = 360;
 int16_t MAX_PITCH_RATE = 360;
@@ -38,17 +39,20 @@ int16_t MAX_ROLL_RATE = 720;
 
 RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
 
-ServoInputPin<GEAR_INPUT_PIN> gearInput(SERVO_MIN, SERVO_MAX);
+ServoInputSignal* gearInput = new ServoInputPin<GEAR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
 
-ServoInputPin<RUDDER_INPUT_PIN> rudderInput(SERVO_MIN, SERVO_MAX);
-ServoInputPin<ELEVATOR_INPUT_PIN> elevatorInput(SERVO_MIN, SERVO_MAX);
-ServoInputPin<AILE_INPUT_PIN> aileInput(SERVO_MIN, SERVO_MAX);
-ServoInputReader servoInputs(AxisData<ServoInputSignal*> { &rudderInput, &elevatorInput, &aileInput });
+ServoInputSignal* rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+ServoInputSignal* elevatorInput = new ServoInputPin<ELEVATOR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+ServoInputSignal* aileInput = new ServoInputPin<AILE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+ServoInputReader servoInputs(AxisData<ServoInputSignal*> { rudderInput, elevatorInput, aileInput });
 
 Servo rudderServo;
 Servo aileServo;
 Servo elevatorServo;
-AxisData<Servo*> servos { &rudderServo, &elevatorServo, &aileServo };
+RotationRateOutput* rudderOutput = new SingleServoOutput(&rudderServo);
+RotationRateOutput* aileOutput = new SingleServoOutput(&aileServo);
+RotationRateOutput* elevatorOutput = new SingleServoOutput(&elevatorServo);
+AxisData<RotationRateOutput*> rateOutputs { rudderOutput, elevatorOutput, aileOutput };
 
 MPU6050 mpu = MPU6050();
 PID pid = PID();
@@ -69,11 +73,9 @@ private:
     ServoInputSignal* switchServo;
 };
 
-PIDSwitch pidSwitch = PIDSwitch(&gearInput);
+PIDSwitch pidSwitch = PIDSwitch(gearInput);
 
-Controller controller(&outputCalculator, servos,
-                &servoInputs,
-                &pidSwitch);
+Controller controller(&outputCalculator, rateOutputs, &servoInputs, &pidSwitch);
 
 void setup() {
     Serial.begin(115200);
@@ -81,9 +83,11 @@ void setup() {
     mpu.remapAxis(0, 1);
     mpu.remapAxis(1, 0);
 
-    pid.setAxisInvert({false, false, true});
+    pid.setAxisInvert( { false, false, true } );
 
     mpu.begin();
+
+    log_v("Servo range: %d", rudderInput->getRange());
 
     while (!ServoInput.available()) {  // wait for all signals to be ready
 		ESP_LOGI("tag","Waiting for servo signals...");
