@@ -7,7 +7,7 @@
 
 #include <Stabilizer.h>
 
-typedef AxisData<ROTATION_DATA_TYPE> CorrectionData;
+typedef AxisData<float> CorrectionData;
 
 class PID: public Stabilizer {
 public:
@@ -15,8 +15,8 @@ public:
     /**
      * Calculate the angular rate to output to counteract the error.
      * @param setpoint the desired angular rate
-     * @param processVariable the current angular rate
-     * @return the angular rate to counteract the error
+     * @param rotationRate the current angular rate
+     * @return the percent of the maximum output
      */
     RotationData loop(RotationData setpoint, RotationData rotationRate);
 

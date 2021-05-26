@@ -8,6 +8,10 @@ class ServoInputReader {
 public:
     ServoInputReader(AxisData<ServoInputSignal*> servoInputs);
 
+    /**
+     * Read the input from Servo signals.
+     * @return the percent of the servo signal
+     */
     RotationData readInput();
 
     void calibrate();

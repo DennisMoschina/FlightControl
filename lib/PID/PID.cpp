@@ -22,8 +22,8 @@ PID::PID() {
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
     const RotationData error = setpoint - rotationRate;
-
-    RotationData termP = this->gainP * error;
+    
+    RotationData termP = error * this->gainP;
     this->termIInterval = (this->termIInterval + error) * this->relaxI;
     RotationData termI = this->termIInterval * this->gainI;
     RotationData termD = (rotationRate - this->oldRotationRate) * this->gainD;
@@ -41,6 +41,12 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
     }
 
     RotationData output = termP + termI + termD + setpoint * this->feedForward;
+    log_v("termP\t\t\tx:%5d, y:%5d, z:%5d", termP.x, termP.y, termP.z);
+    log_v("termI\t\t\tx:%5d, y:%5d, z:%5d", termI.x, termI.y, termI.z);
+    log_v("termD\t\t\tx:%5d, y:%5d, z:%5d", termD.x, termD.y, termD.z);
+
+    log_v("Output pre cap\t\t\tx:%5d, y:%5d, z:%5d", output.x, output.y, output.z);
+
     for (int i = 0; i < 3; i++) {
         output[i] *= this->axisInvert[i] ? -1 : 1;
         if (output[i] > 100) output[i] = 100;
