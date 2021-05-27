@@ -3,22 +3,18 @@
 
 #include <RotationRateOuput.h>
 #include <ESP32Servo.h>
+#include <ServoOutput.h>
 
-class SingleServoOutput: public RotationRateOutput {
+class SingleServoOutput: public RotationRateOutput, public ServoOutput {
 public:
     SingleServoOutput(Servo* servo);
     void write(int rate);
 
-    void setMiddle(int middle) {
-        this->servoMiddle = middle;
-    }
-    void setRange(int range) {
-        this->servoRange = range;
-    }
+    void setMiddle(int servoMiddle);
+    void setRange(int range);
 
 private:
     Servo* servo;
-
     int servoMiddle;
     int servoRange;
 };

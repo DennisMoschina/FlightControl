@@ -16,3 +16,11 @@ void SingleServoOutput::write(int rate) {
                             this->servoMiddle + servoRadius);
     this->servo->writeMicroseconds(output);
 }
+
+void SingleServoOutput::setMiddle(int middle) {
+    this->servoMiddle = middle;
+}
+
+void SingleServoOutput::setRange(int range) {
+    this->servoRange = range;
+}
