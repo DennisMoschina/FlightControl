@@ -5,7 +5,7 @@
 #include <ESP32Servo.h>
 #include <ServoOutput.h>
 
-class SingleServoOutput: public RotationRateOutput, public ServoOutput {
+class SingleServoOutput: public ServoOutput {
 public:
     SingleServoOutput(Servo* servo);
     void write(int rate);

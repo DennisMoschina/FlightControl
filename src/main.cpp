@@ -16,6 +16,9 @@
 
 #include <RotationRateOuput.h>
 #include <SingleServoOutput.h>
+#include <ServoOutput.h>
+
+#include <Menu.h>
 
 #define GEAR_INPUT_PIN 27
 
@@ -49,10 +52,10 @@ ServoInputReader servoInputs(AxisData<ServoInputSignal*> { rudderInput, elevator
 Servo rudderServo;
 Servo aileServo;
 Servo elevatorServo;
-RotationRateOutput* rudderOutput = new SingleServoOutput(&rudderServo);
-RotationRateOutput* aileOutput = new SingleServoOutput(&aileServo);
-RotationRateOutput* elevatorOutput = new SingleServoOutput(&elevatorServo);
-AxisData<RotationRateOutput*> rateOutputs { rudderOutput, elevatorOutput, aileOutput };
+ServoOutput* rudderOutput = new SingleServoOutput(&rudderServo);
+ServoOutput* aileOutput = new SingleServoOutput(&aileServo);
+ServoOutput* elevatorOutput = new SingleServoOutput(&elevatorServo);
+AxisData<ServoOutput*> rateOutputs { rudderOutput, elevatorOutput, aileOutput };
 
 MPU6050 mpu = MPU6050();
 PID pid = PID();
@@ -76,6 +79,8 @@ private:
 PIDSwitch pidSwitch = PIDSwitch(gearInput);
 
 Controller controller(&outputCalculator, rateOutputs, &servoInputs, &pidSwitch);
+
+Menu menu(&controller, rateOutputs, &servoInputs);
 
 void setup() {
     Serial.begin(115200);

@@ -1,7 +1,7 @@
 #include <Controller.h>
 
 Controller::Controller(OutputCalculator* outputCalculator,
-                AxisData<RotationRateOutput*> outputServos,
+                AxisData<ServoOutput*> outputServos,
                 ServoInputReader* servoInputs,
                 Switch* pidSwitch) {
     this->outputCalculator = outputCalculator;

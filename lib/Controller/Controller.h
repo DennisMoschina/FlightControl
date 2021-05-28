@@ -5,14 +5,14 @@
 #include <ESP32Servo.h>
 #include <ServoInputReader.h>
 #include <Switch.h>
-#include <RotationRateOuput.h>
+#include <ServoOutput.h>
 
 #include <functional>
 
 class Controller {
 public:
     Controller(OutputCalculator* outputCalculator,
-                AxisData<RotationRateOutput*> outputServos,
+                AxisData<ServoOutput*> outputServos,
                 ServoInputReader* servoInputs,
                 Switch* pidSwitch);
 
@@ -20,7 +20,7 @@ public:
     void stop();
 private:
     OutputCalculator* outputCalculator;
-    AxisData<RotationRateOutput*> outputServos;
+    AxisData<ServoOutput*> outputServos;
     ServoInputReader* servoInputs;
     Switch* pidSwitch;
 
