@@ -16,8 +16,16 @@ public:
                 ServoInputReader* servoInputs,
                 Switch* pidSwitch);
 
+    /**
+     * Create the task for the controller to process the inputs.
+     */
     void begin();
+
+    /**
+     * Stop the task of the Controller putting out the data.
+     */
     void stop();
+    
 private:
     OutputCalculator* outputCalculator;
     AxisData<ServoOutput*> outputServos;
