@@ -11,7 +11,9 @@ public:
     Menu(Controller* controller, AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader);
 
     void startController();
+    void stopController();
     void trimServos(AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader);
+    void trimServos();
     void endTrimming();
 
     friend void trim(void * parameter);

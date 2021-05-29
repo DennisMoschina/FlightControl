@@ -19,6 +19,7 @@
 #include <ServoOutput.h>
 
 #include <Menu.h>
+#include <SerialMonitorInterface.h>
 
 #define GEAR_INPUT_PIN 27
 
@@ -82,6 +83,8 @@ Controller controller(&outputCalculator, rateOutputs, &servoInputs, &pidSwitch);
 
 Menu menu(&controller, rateOutputs, &servoInputs);
 
+UserInterface* userInterface = new SerialMonitorInterface(&menu);
+
 void setup() {
     Serial.begin(115200);
 
@@ -113,4 +116,7 @@ void setup() {
     controller.begin();
 }
 
-void loop() {}
+void loop() {
+    userInterface->handle();
+    delay(100);
+}
