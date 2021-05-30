@@ -8,6 +8,17 @@ public:
      * @param rate the rate to write in percent
      */
     virtual void write(int rate) = 0;
+
+    void setResolution(int resolution) {
+        this->resolution = resolution;
+    }
+
+    int getResoulution() {
+        return this->resolution;
+    }
+
+protected:
+    int resolution = 1024;
 };
 
 #endif

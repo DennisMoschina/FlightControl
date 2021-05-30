@@ -12,12 +12,12 @@ typedef AxisData<float> CorrectionData;
 class PID: public Stabilizer {
 public:
     PID();
-    
+
     /**
      * Calculate the angular rate to output to counteract the error.
      * @param setpoint the desired angular rate
      * @param rotationRate the current angular rate
-     * @return the ratio of the maximum output (from -1024 to 1024)
+     * @return the ratio of the maximum output (from -#resolution to resolution)
      */
     RotationData loop(RotationData setpoint, RotationData rotationRate);
 

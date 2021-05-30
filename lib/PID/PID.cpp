@@ -69,8 +69,8 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
 
     for (int i = 0; i < 3; i++) {
         output[i] *= this->axisInvert[i] ? -1 : 1;
-        if (output[i] > 1024) output[i] = 1024;
-        else if (output[i] < -1024) output[i] = -1024;
+        if (output[i] > this->resolution) output[i] = this->resolution;
+        else if (output[i] < -this->resolution) output[i] = -this->resolution;
     }
     return output;
 }
