@@ -1,26 +1,46 @@
 #include <PID.h>
 
 #define DEFAULT_P_GAIN 0.25
-#define DEFAULT_I_GAIN 0.025
+#define DEFAULT_I_GAIN 0.05
 #define DEFAULT_D_GAIN 0.15
 
-#define DEFAULT_FEED_FORWARD 0.25
+#define DEFAULT_FEED_FORWARD 0.138
 
-#define DEFAULT_I_RELAX 0.995
+#define DEFAULT_I_RELAX 0.99
 
-#define DEFAULT_ANTI_WINDUP 100
+#define DEFAULT_P_GAIN_YAW 0.17
+#define DEFAULT_P_GAIN_PITCH 0.25
+#define DEFAULT_P_GAIN_ROLL 0.06
+
+#define DEFAULT_I_GAIN_YAW 0.03
+#define DEFAULT_I_GAIN_ROLL 0.0075
+#define DEFAULT_D_GAIN_ROLL 0.1
+
+#define DEFAULT_ANTI_WINDUP 1024
 
 PID::PID() {
-    this->gainP = DEFAULT_P_GAIN;
+    //this->gainP = DEFAULT_P_GAIN;
     this->gainI = DEFAULT_I_GAIN;
+
+    this->gainP.yaw = DEFAULT_P_GAIN_YAW;
+    this->gainP.pitch = DEFAULT_P_GAIN_PITCH;
+    this->gainP.roll = DEFAULT_P_GAIN_ROLL;
+
+    this->gainI.yaw = DEFAULT_I_GAIN_YAW;
+    this->gainI.roll = DEFAULT_I_GAIN_ROLL;
+    this->gainD.roll = DEFAULT_D_GAIN_ROLL;
+
     this->gainD = DEFAULT_D_GAIN;
     this->relaxI = DEFAULT_I_RELAX;
     this->antiWindup = DEFAULT_ANTI_WINDUP;
 
     this->axisInvert = true;
+
+    this->feedForward = DEFAULT_FEED_FORWARD;
 }
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
+    setpoint.roll = -setpoint.roll;
     const RotationData error = setpoint - rotationRate;
     
     RotationData termP = error * this->gainP;
@@ -49,8 +69,8 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
 
     for (int i = 0; i < 3; i++) {
         output[i] *= this->axisInvert[i] ? -1 : 1;
-        if (output[i] > 100) output[i] = 100;
-        else if (output[i] < -100) output[i] = -100;
+        if (output[i] > 1024) output[i] = 1024;
+        else if (output[i] < -1024) output[i] = -1024;
     }
     return output;
 }
@@ -105,4 +125,9 @@ void PID::setAntiWindup(int antiWindup) {
 }
 void PID::setRelaxI(CorrectionData relaxI) {
     this->relaxI = relaxI;
+}
+
+void PID::reset() {
+    this->termIInterval = 0;
+    this->oldRotationRate = 0;
 }
