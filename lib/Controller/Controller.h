@@ -25,7 +25,7 @@ public:
      * Stop the task of the Controller putting out the data.
      */
     void stop();
-    
+
 private:
     OutputCalculator* outputCalculator;
     AxisData<ServoOutput*> outputServos;

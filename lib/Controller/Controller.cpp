@@ -22,7 +22,7 @@ void Controller::control() {
     RotationData servoInput = this->servoInputs->readInput();
     log_d("Input\t\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
 
-    RotationData output = this->outputCalculator->calculateOutput(servoInput);
+    RotationData output = this->outputCalculator->calculateOutput(servoInput, this->servoInputs->getResolution());
 
     this->outputServos.x->write(output.x);
     this->outputServos.y->write(output.y);

@@ -14,10 +14,24 @@ public:
      */
     RotationData readInput();
 
+    void setInvert(byte axis, boolean invert);
+    void setInvert(AxisData<boolean> invert);
+
     void calibrate();
+
+    void setResolution(int resolution) {
+        this->resolution = resolution;
+    }
+
+    int getResolution() {
+        return this->resolution;
+    }
 
 private:
     AxisData<ServoInputSignal*> servoInputs;
+    AxisData<boolean> inverts;
+
+    int resolution = 1024;
 };
 
 #endif

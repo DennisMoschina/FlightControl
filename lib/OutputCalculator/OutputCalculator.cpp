@@ -8,13 +8,13 @@ OutputCalculator::OutputCalculator(RotationData maxRates, RotationReader* rotati
     this->stabilizer = stabilizer;
 }
 
-RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
+RotationData OutputCalculator::calculateOutput(RotationData servoInput, int resolution) {
     if (!this->shouldCalculate) return servoInput;
 
     RotationData setpoint;
-    setpoint.yaw = map(servoInput.yaw, -100, 100, -this->maxRates.yaw, this->maxRates.yaw);
-    setpoint.pitch = map(servoInput.pitch, -100, 100, -this->maxRates.pitch, this->maxRates.pitch);
-    setpoint.roll = map(servoInput.roll, -100, 100, -this->maxRates.roll, this->maxRates.z);
+    setpoint.yaw = map(servoInput.yaw, -resolution, resolution, -this->maxRates.yaw, this->maxRates.yaw);
+    setpoint.pitch = map(servoInput.pitch, -resolution, resolution, -this->maxRates.pitch, this->maxRates.pitch);
+    setpoint.roll = map(servoInput.roll, -resolution, resolution, -this->maxRates.roll, this->maxRates.z);
 
     RotationData gyroReadings = rotationReader->getRotation();
     RotationData output = stabilizer->loop(setpoint, gyroReadings);
@@ -30,4 +30,5 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
 
 void OutputCalculator::setCalculate(boolean shouldCalculate) {
     this->shouldCalculate = shouldCalculate;
+    this->stabilizer->reset();
 }

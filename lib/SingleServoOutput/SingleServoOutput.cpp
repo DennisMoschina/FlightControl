@@ -11,7 +11,7 @@ SingleServoOutput::SingleServoOutput(Servo* servo) {
 
 void SingleServoOutput::write(int rate) {
     const int servoRadius = this->servoRange / 2;
-    const int output = map(rate, -100, 100,
+    const int output = map(rate, -this->resolution, this->resolution,
                             this->servoMiddle - servoRadius,
                             this->servoMiddle + servoRadius);
     this->servo->writeMicroseconds(output);
