@@ -12,31 +12,32 @@
 #define DEFAULT_P_GAIN_PITCH 0.25
 #define DEFAULT_P_GAIN_ROLL 0.06
 
-#define DEFAULT_I_GAIN_YAW 0.03
-#define DEFAULT_I_GAIN_ROLL 0.0075
-#define DEFAULT_D_GAIN_ROLL 0.1
+#define DEFAULT_I_GAIN_YAW 0//.03
+#define DEFAULT_I_GAIN_ROLL 0//.0075
 
-#define DEFAULT_ANTI_WINDUP 1024
+#define DEFAULT_D_GAIN_ROLL 0//.1
+
+#define DEFAULT_ANTI_WINDUP 100
 
 PID::PID() {
-    //this->gainP = DEFAULT_P_GAIN;
-    this->gainI = DEFAULT_I_GAIN;
+    this->setPGain(0, DEFAULT_P_GAIN_YAW);
+    this->setPGain(1, DEFAULT_P_GAIN_PITCH);
+    this->setPGain(2, DEFAULT_P_GAIN_ROLL);
 
-    this->gainP.yaw = DEFAULT_P_GAIN_YAW;
-    this->gainP.pitch = DEFAULT_P_GAIN_PITCH;
-    this->gainP.roll = DEFAULT_P_GAIN_ROLL;
+    this->setIGain(0, DEFAULT_I_GAIN_YAW);
+    this->setIGain(1, DEFAULT_I_GAIN);
+    this->setIGain(2, DEFAULT_I_GAIN_ROLL);
 
-    this->gainI.yaw = DEFAULT_I_GAIN_YAW;
-    this->gainI.roll = DEFAULT_I_GAIN_ROLL;
     this->gainD.roll = DEFAULT_D_GAIN_ROLL;
 
     this->gainD = DEFAULT_D_GAIN;
+
     this->relaxI = DEFAULT_I_RELAX;
-    this->antiWindup = DEFAULT_ANTI_WINDUP;
+    this->setAntiWindup(DEFAULT_ANTI_WINDUP);
 
     this->axisInvert = true;
 
-    this->feedForward = DEFAULT_FEED_FORWARD;
+    this->setFeedForward(DEFAULT_FEED_FORWARD);
 }
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
@@ -77,27 +78,27 @@ RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
 
 
 void PID::setPGain(byte axis, float gain) {
-    this->gainP[axis] = gain;
+    this->gainP[axis] = gain * (this->resolution / 100);
 }
 
 void PID::setIGain(byte axis, float gain) {
-    this->gainI[axis] = gain;
+    this->gainI[axis] = gain * (this->resolution / 100);
 }
 
 void PID::setDGain(byte axis, float gain) {
-    this->gainD[axis] = gain;
+    this->gainD[axis] = gain * (this->resolution / 100);
 }
 
 void PID::setPGain(CorrectionData pGain) {
-    this->gainP = pGain;
+    this->gainP = pGain * (this->resolution / 100);
 }
 
 void PID::setIGain(CorrectionData iGain) {
-    this->gainI = iGain;
+    this->gainI = iGain * (this->resolution / 100);
 }
 
 void PID::setDGain(CorrectionData dGain) {
-    this->gainD = dGain;
+    this->gainD = dGain * (this->resolution / 100);
 }
 
 
@@ -110,7 +111,7 @@ void PID::setAxisInvert(AxisData<boolean> invert) {
 }
 
 void PID::setFeedForward(byte axis, float feedForward) {
-    this->feedForward[axis] = feedForward;
+    this->feedForward[axis] = feedForward * (this->resolution / 100);
 }
 
 void PID::setRelaxI(byte axis, float relaxI) {
@@ -118,10 +119,10 @@ void PID::setRelaxI(byte axis, float relaxI) {
 }
 
 void PID::setFeedForward(CorrectionData feedForward) {
-    this->feedForward = feedForward;
+    this->feedForward = feedForward * (this->resolution / 100);
 }
 void PID::setAntiWindup(int antiWindup) {
-    this->antiWindup = antiWindup;
+    this->antiWindup = antiWindup * (this->resolution / 100);
 }
 void PID::setRelaxI(CorrectionData relaxI) {
     this->relaxI = relaxI;
@@ -131,3 +132,32 @@ void PID::reset() {
     this->termIInterval = 0;
     this->oldRotationRate = 0;
 }
+
+
+void PID::setPGain(float pGain) {
+    for (int i = 0; i < 3; i++) {
+        this->setPGain(i, pGain);
+    }
+}
+void PID::setIGain(float iGain) {
+    for (int i = 0; i < 3; i++) {
+        this->setIGain(i, iGain);
+    }
+}
+void PID::setDGain(float dGain) {
+    for (int i = 0; i < 3; i++) {
+        this->setDGain(i, dGain);
+    }
+}
+
+void PID::setFeedForward(float feedForward) {
+    for (int i = 0; i < 3; i++) {
+        this->setFeedForward(i, feedForward);
+    }
+}
+void PID::setRelaxI(float relaxI) {
+    for (int i = 0; i < 3; i++) {
+        this->setRelaxI(i, relaxI);
+    }
+}
+ 

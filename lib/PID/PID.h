@@ -35,6 +35,14 @@ public:
     void setFeedForward(CorrectionData feedForward);
     void setRelaxI(CorrectionData relaxI);
 
+    void setPGain(float pGain);
+    void setIGain(float iGain);
+    void setDGain(float dGain);
+
+    void setFeedForward(float feedForward);
+    void setRelaxI(float relaxI);
+ 
+
     void setAntiWindup(int antiWindup);
 
     void setAxisInvert(byte axis, boolean invert);

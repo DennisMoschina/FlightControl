@@ -92,13 +92,14 @@ void setup() {
     mpu.remapAxis(1, 0);
 
     pid.setAxisInvert( { false, false, true } );
+    servoInputs.setInvert( { false, false, false } );
 
     mpu.begin();
 
     log_v("Servo range: %d", rudderInput->getRange());
 
     while (!ServoInput.available()) {  // wait for all signals to be ready
-		ESP_LOGI("tag","Waiting for servo signals...");
+		log_i("Waiting for servo signals...");
 		delay(500);
 	}
 
@@ -112,6 +113,9 @@ void setup() {
     aileServo.attach(AILE_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
     elevatorServo.setPeriodHertz(50);
     elevatorServo.attach(ELEVATOR_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+
+    aileOutput->setMiddle(1420);
+    elevatorOutput->setMiddle(1600);
 
     controller.begin();
 }
