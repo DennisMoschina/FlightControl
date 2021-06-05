@@ -160,4 +160,38 @@ void PID::setRelaxI(float relaxI) {
         this->setRelaxI(i, relaxI);
     }
 }
- 
+
+
+
+
+
+void PID::setMinThrottlePGain(float pGain) {
+    this->minThrottleGainP = pGain * (this->resolution / 100);
+}
+void PID::setMinThrottleIGain(float iGain) {
+    this->minThrottleGainI = iGain * (this->resolution / 100);
+}
+void PID::setMinThrottleDGain(float dGain) {
+    this->minThrottleGainD = dGain * (this->resolution / 100);
+}
+
+void PID::setMinThrottlePGain(byte axis, float gain) {
+    this->minThrottleGainP[axis] = gain;
+}
+void PID::setMinThrottleIGain(byte axis, float gain) {
+    this->minThrottleGainI[axis] = gain;
+}
+void PID::setMinThrottleDGain(byte axis, float gain) {
+    this->minThrottleGainD[axis] = gain;
+}
+
+
+void PID::setMinThrottlePGain(CorrectionData pGain) {
+    this->minThrottleGainP = pGain;
+}
+void PID::setMinThrottleIGain(CorrectionData iGain) {
+    this->minThrottleGainI = iGain;
+}
+void PID::setMinThrottleDGain(CorrectionData dGain) {
+    this->minThrottleGainD = dGain;
+}

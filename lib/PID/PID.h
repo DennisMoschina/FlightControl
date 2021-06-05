@@ -7,6 +7,8 @@
 
 #include <Stabilizer.h>
 
+#include <functional>
+
 typedef AxisData<float> CorrectionData;
 
 class PID: public Stabilizer {
@@ -20,6 +22,16 @@ public:
      * @return the ratio of the maximum output (from -#resolution to resolution)
      */
     RotationData loop(RotationData setpoint, RotationData rotationRate);
+
+    /**
+     * Calculate the angular rate to output to counteract the error.
+     * @param setpoint the desired angular rate
+     * @param rotationRate the current angular rate
+     * @param throttleSignal the signal for the throttle
+     * @param throttleResolution the maximum value for the throttle
+     * @return the ratio of the maximum output (from -#resolution to #resolution)
+     */
+    RotationData loop(RotationData setpoint, RotationData rotationRate, int throttleSignal, int throttleResolution);
 
     void setPGain(byte axis, float gain);
     void setIGain(byte axis, float gain);
@@ -35,12 +47,32 @@ public:
     void setFeedForward(CorrectionData feedForward);
     void setRelaxI(CorrectionData relaxI);
 
+    void setFeedForward(float feedForward);
+    void setRelaxI(float relaxI);
+
+
+    void setMinThrottlePGain(float pGain);
+    void setMinThrottleIGain(float iGain);
+    void setMinThrottleDGain(float dGain);
+
+    void setMinThrottlePGain(byte axis, float gain);
+    void setMinThrottleIGain(byte axis, float gain);
+    void setMinThrottleDGain(byte axis, float gain);
+
+    void setMinThrottlePGain(CorrectionData pGain);
+    void setMinThrottleIGain(CorrectionData iGain);
+    void setMinThrottleDGain(CorrectionData dGain);
+
+    void setFeedForward(byte axis, float feedForward);
+    void setRelaxI(byte axis, float relaxI);
+
+    void setFeedForward(CorrectionData feedForward);
+    void setRelaxI(CorrectionData relaxI);
+
     void setPGain(float pGain);
     void setIGain(float iGain);
     void setDGain(float dGain);
 
-    void setFeedForward(float feedForward);
-    void setRelaxI(float relaxI);
  
 
     void setAntiWindup(int antiWindup);
@@ -55,6 +87,10 @@ private:
     CorrectionData gainI;
     CorrectionData gainD;
 
+    CorrectionData minThrottleGainP;
+    CorrectionData minThrottleGainI;
+    CorrectionData minThrottleGainD;
+
     CorrectionData feedForward;
 
     CorrectionData relaxI;
@@ -66,6 +102,11 @@ private:
     RotationData oldRotationRate;
 
     AxisData<boolean> axisInvert;
+
+    std::function<float (int, int, int, int)> gainCalculator
+        = [](int minThrottleGain, int maxThrottleGain, int throttle, int throttleRes) {
+                return map(throttle, 0, throttleRes, minThrottleGain, maxThrottleGain);
+            };
 };
 
 #endif
