@@ -103,10 +103,27 @@ private:
 
     AxisData<boolean> axisInvert;
 
-    std::function<float (int, int, int, int)> gainCalculator
-        = [](int minThrottleGain, int maxThrottleGain, int throttle, int throttleRes) {
+    /**
+     * @param minThrottleGain the gain for the minimal throttle
+     * @param maxThrottleGain the gain for the maximal throttle
+     * @param throttle the current throttle
+     * @param throttleRes the maximum throttle
+     */
+    std::function<float (float, float, int, int)> gainCalculator
+        = [](float minThrottleGain, float maxThrottleGain, int throttle, int throttleRes) {
                 return map(throttle, 0, throttleRes, minThrottleGain, maxThrottleGain);
             };
+
+    CorrectionData gainCreator(int throttle,
+                                int throttleRes,
+                                CorrectionData minThrottleGain,
+                                CorrectionData maxThrottleGain);
+
+    RotationData calculateOutput(RotationData setpoint,
+                                RotationData rotationRate,
+                                CorrectionData pGain,
+                                CorrectionData iGain,
+                                CorrectionData dGain);
 };
 
 #endif

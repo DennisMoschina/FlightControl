@@ -41,40 +41,33 @@ PID::PID() {
 }
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
-    setpoint.roll = -setpoint.roll;
-    const RotationData error = setpoint - rotationRate;
-    
-    RotationData termP = error * this->gainP;
-    this->termIInterval = (this->termIInterval + error) * this->relaxI;
-    RotationData termI = this->termIInterval * this->gainI;
-    RotationData termD = (rotationRate - this->oldRotationRate) * this->gainD;
-
-    this->oldRotationRate = rotationRate;
-
-    for (int i = 0; i < 3; i++) {
-        if (termI[i] > this->antiWindup) {
-            termI[i] = this->antiWindup;
-            this->termIInterval[i] = termI[i] / gainI[i];
-        } else if (termI[i] < -this->antiWindup) {
-            termI[i] = -this->antiWindup;
-            this->termIInterval[i] = termI[i] / gainI[i];
-        }
-    }
-
-    RotationData output = termP + termI + termD + setpoint * this->feedForward;
-    log_v("termP\t\t\tx:%5d, y:%5d, z:%5d", termP.x, termP.y, termP.z);
-    log_v("termI\t\t\tx:%5d, y:%5d, z:%5d", termI.x, termI.y, termI.z);
-    log_v("termD\t\t\tx:%5d, y:%5d, z:%5d", termD.x, termD.y, termD.z);
-
-    log_v("Output pre cap\t\t\tx:%5d, y:%5d, z:%5d", output.x, output.y, output.z);
-
-    for (int i = 0; i < 3; i++) {
-        output[i] *= this->axisInvert[i] ? -1 : 1;
-        if (output[i] > this->resolution) output[i] = this->resolution;
-        else if (output[i] < -this->resolution) output[i] = -this->resolution;
-    }
-    return output;
+    return this->calculateOutput(setpoint, rotationRate, this->gainP, this->gainI, this->gainD);
 }
+
+
+RotationData PID::loop(RotationData setpoint,
+                        RotationData rotationRate,
+                        int throttleSignal,
+                        int throttleResolution) {
+
+    CorrectionData pGain = this->gainCreator(throttleSignal,
+                                            throttleResolution,
+                                            this->minThrottleGainP,
+                                            this->gainP);
+
+    CorrectionData iGain = this->gainCreator(throttleSignal,
+                                            throttleResolution,
+                                            this->minThrottleGainI,
+                                            this->gainI);
+
+    CorrectionData dGain = this->gainCreator(throttleSignal,
+                                            throttleResolution,
+                                            this->minThrottleGainD,
+                                            this->gainD);
+
+    return this->calculateOutput(setpoint, rotationRate, pGain, iGain, dGain);
+}
+
 
 
 void PID::setPGain(byte axis, float gain) {
@@ -194,4 +187,58 @@ void PID::setMinThrottleIGain(CorrectionData iGain) {
 }
 void PID::setMinThrottleDGain(CorrectionData dGain) {
     this->minThrottleGainD = dGain;
+}
+
+
+
+CorrectionData PID::gainCreator(int throttle,
+                                int throttleRes,
+                                CorrectionData minThrottleGain,
+                                CorrectionData maxThrottleGain) {
+    CorrectionData gain;
+    for (int i = 0; i < 3; i++) {
+        gain[i] = this->gainCalculator(minThrottleGain[i], maxThrottleGain[i], throttle, throttleRes);
+    }
+
+    return gain;
+}
+
+RotationData PID::calculateOutput(RotationData setpoint,
+                                RotationData rotationRate,
+                                CorrectionData pGain,
+                                CorrectionData iGain,
+                                CorrectionData dGain) {
+    setpoint.roll = -setpoint.roll;
+    const RotationData error = setpoint - rotationRate;
+    
+    RotationData termP = error * pGain;
+    this->termIInterval = (this->termIInterval + error) * this->relaxI;
+    RotationData termI = this->termIInterval * iGain;
+    RotationData termD = (rotationRate - this->oldRotationRate) * dGain;
+
+    this->oldRotationRate = rotationRate;
+
+    for (int i = 0; i < 3; i++) {
+        if (termI[i] > this->antiWindup) {
+            termI[i] = this->antiWindup;
+            this->termIInterval[i] = termI[i] / gainI[i];
+        } else if (termI[i] < -this->antiWindup) {
+            termI[i] = -this->antiWindup;
+            this->termIInterval[i] = termI[i] / gainI[i];
+        }
+    }
+
+    RotationData output = termP + termI + termD + setpoint * this->feedForward;
+    log_v("termP\t\t\tx:%5d, y:%5d, z:%5d", termP.x, termP.y, termP.z);
+    log_v("termI\t\t\tx:%5d, y:%5d, z:%5d", termI.x, termI.y, termI.z);
+    log_v("termD\t\t\tx:%5d, y:%5d, z:%5d", termD.x, termD.y, termD.z);
+
+    log_v("Output pre cap\t\t\tx:%5d, y:%5d, z:%5d", output.x, output.y, output.z);
+
+    for (int i = 0; i < 3; i++) {
+        output[i] *= this->axisInvert[i] ? -1 : 1;
+        if (output[i] > this->resolution) output[i] = this->resolution;
+        else if (output[i] < -this->resolution) output[i] = -this->resolution;
+    }
+    return output;
 }
