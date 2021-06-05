@@ -17,6 +17,19 @@ public:
      */
     RotationData calculateOutput(RotationData servoInput, int resolution);
 
+    /**
+     * Calculate the output to match the steering signals.
+     * @param servoInput the steering signal in percent of the maximum rates
+     * @param resolution the resolution of the servo inputs
+     * @param throttleInput the signal for the throttle
+     * @param throttleResolution the resolution of the throttle signal
+     * @return the signal to output in percent to match the steering signal
+     */
+    RotationData calculateOutupt(RotationData servoInput,
+                                int resolution,
+                                int throttleInput,
+                                int throttleResolution);
+
     void setCalculate(boolean shouldCalculate);
 
 private:

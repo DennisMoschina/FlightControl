@@ -10,6 +10,16 @@ Controller::Controller(OutputCalculator* outputCalculator,
     this->pidSwitch = pidSwitch;
 }
 
+Controller::Controller(OutputCalculator* outputCalculator,
+                AxisData<ServoOutput*> outputServos,
+                ServoOutput* throttleOutput,
+                ServoInputReader* servoInputs,
+                ThrottleReader* throttleInput,
+                Switch* pidSwitch) : Controller(outputCalculator, outputServos, servoInputs, pidSwitch) {
+    this->throttleInput = throttleInput;
+    this->throttleOutput = throttleOutput;
+}
+
 void controlTask(void * parameter) {
     for (;;) {
         ((Controller*) parameter)->control();
