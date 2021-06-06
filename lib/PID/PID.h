@@ -63,12 +63,6 @@ public:
     void setMinThrottleIGain(CorrectionData iGain);
     void setMinThrottleDGain(CorrectionData dGain);
 
-    void setFeedForward(byte axis, float feedForward);
-    void setRelaxI(byte axis, float relaxI);
-
-    void setFeedForward(CorrectionData feedForward);
-    void setRelaxI(CorrectionData relaxI);
-
     void setPGain(float pGain);
     void setIGain(float iGain);
     void setDGain(float dGain);
