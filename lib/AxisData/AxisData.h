@@ -9,6 +9,13 @@
 
 
 template<typename T> struct AxisData {
+    static const int YAW = 0;
+    static const int X = 0;
+    static const int PITCH = 1;
+    static const int Y = 1;
+    static const int ROLL = 2;
+    static const int Z = 2;
+
     union {
         T x;
         T yaw;
