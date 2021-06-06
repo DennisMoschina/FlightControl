@@ -5,6 +5,11 @@
 #include <Stabilizer.h>
 #include <RotationReader.h>
 
+/**
+ * @brief Calculate the output based on the steering signal and the actual rotation.
+ * @author Dennis Moschina
+ * @version 1.0
+ */
 class OutputCalculator {
 public:
     OutputCalculator(RotationData maxRates, RotationReader* rotationReader, Stabilizer* stabilizer);
@@ -30,6 +35,10 @@ public:
                                 int throttleInput,
                                 int throttleResolution);
 
+    /**
+     * Enable the stabilizer.
+     * @param shouldCalculate the stabilizer is enabled
+     */
     void setCalculate(boolean shouldCalculate);
 
 private:
@@ -39,6 +48,8 @@ private:
     RotationData maxRates;
 
     boolean shouldCalculate = true;
+
+    RotationData calculateSetpoint(RotationData input, int resolution);
 };
 
 #endif
