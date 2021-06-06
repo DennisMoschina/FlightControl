@@ -26,6 +26,12 @@ void controlTask(void * parameter) {
     }
 }
 
+void controlTaskThrottle(void * parameter) {
+    for (;;) {
+        ((Controller*) parameter)->controlWithThrottle();
+    }
+}
+
 void Controller::control() {
     this->outputCalculator->setCalculate(this->pidSwitch->getBoolean());
 
@@ -34,17 +40,38 @@ void Controller::control() {
 
     RotationData output = this->outputCalculator->calculateOutput(servoInput, this->servoInputs->getResolution());
 
-    this->outputServos.x->write(output.x);
-    this->outputServos.y->write(output.y);
-    this->outputServos.z->write(output.z);
+    this->writeOutputs(output);
+
+    delay(20);
+}
+
+void Controller::controlWithThrottle() {
+    this->outputCalculator->setCalculate(this->pidSwitch->getBoolean());
+
+    RotationData servoInput = this->servoInputs->readInput();
+    log_d("Input\t\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
+
+    int throttleSignal = this->throttleInput->getThrottle();
+
+    RotationData output = this->outputCalculator->calculateOutput(servoInput,
+                                                                    this->servoInputs->getResolution(),
+                                                                    throttleSignal,
+                                                                    this->throttleInput->getResolution());
+
+    this->writeOutputs(output);
 
     delay(20);
 }
 
 void Controller::begin() {
-    xTaskCreatePinnedToCore(controlTask, "controlTask", 10000, this, 0, &this->pidLoopHandle, 0);
+    TaskFunction_t control = this->throttleInput == nullptr ? controlTask : controlTaskThrottle;    
+    xTaskCreatePinnedToCore(control, "controlTask", 10000, this, 0, &this->pidLoopHandle, 0);
 }
 
 void Controller::stop() {
     vTaskDelete(this->pidLoopHandle);
+}
+
+void Controller::writeOutputs(RotationData output) {
+    for (int i = 0; i < 3; i++) this->outputServos[i]->write(output[i]);
 }

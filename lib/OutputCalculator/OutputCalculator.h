@@ -30,7 +30,7 @@ public:
      * @param throttleResolution the resolution of the throttle signal
      * @return the signal to output in percent to match the steering signal
      */
-    RotationData calculateOutupt(RotationData servoInput,
+    RotationData calculateOutput(RotationData servoInput,
                                 int resolution,
                                 int throttleInput,
                                 int throttleResolution);

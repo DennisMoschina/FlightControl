@@ -45,8 +45,12 @@ private:
     TaskHandle_t pidLoopHandle;
 
     friend void controlTask(void * parameter);
+    friend void controlTaskThrottle(void * parameter);
 
     void control();
+    void controlWithThrottle();
+
+    void writeOutputs(RotationData output);
 };
 
 #endif

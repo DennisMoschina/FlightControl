@@ -24,7 +24,7 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput, int reso
     return output;
 }
 
-RotationData OutputCalculator::calculateOutupt(RotationData servoInput,
+RotationData OutputCalculator::calculateOutput(RotationData servoInput,
                                 int resolution,
                                 int throttleInput,
                                 int throttleResolution) {
