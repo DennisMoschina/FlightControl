@@ -12,12 +12,12 @@
 #endif
 
 /**
- * Load the settings made to the servos and the pid stabilizer.
+ * @brief Store and load the settings made to the servos and the pid stabilizer.
  * @author Dennis Moschina
  * @version 1.0
  */
 class SettingsLoader {
-    ///todo finish implementation for EEPROM
+    ///@todo finish implementation for EEPROM
 public:
     SettingsLoader(PID* pid, AxisData<ServoOutput*> outputs);
 

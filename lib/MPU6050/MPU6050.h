@@ -20,11 +20,18 @@
 #define DEGREE_PER_SECOND 131
 
 /**
- * Communicate with the MPU6050 sensor easily.
+ * @brief Read data from the MPU6050 sensor easily.
+ * @author Dennis Moschina
+ * @version 1.0
  */
 class MPU6050 : public virtual RotationReader {
 public:
     MPU6050(byte sda = 21, byte scl = 22);
+
+    /**
+     * @brief Initialize the MPU6050.
+     * @details Configure the MPU to make the most detailed data available and calibrate it.
+     */
     void begin();
 
     /**
@@ -56,8 +63,18 @@ public:
     void setAccelYOffset(RAW_DATA_TYPE offset);
     void setAccelZOffset(RAW_DATA_TYPE offset);
 
+    /**
+     * @brief Change the orientation of the axes.
+     * @param from the previous axis
+     * @param to the new axis
+     */
     void remapAxis(byte from, byte to);
+    /**
+     * @brief Change the orientation of the axes.
+     * @param to the new orientations of the axes
+     */
     void remapAxis(AxisData<byte> to);
+
 
 private:
     RawAxisData gyroOffset;
@@ -68,6 +85,8 @@ private:
     RawAxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
 
     AxisData<byte> axisMap;
+
+    AxisData<boolean> invertOutput;
 };
 
 #endif

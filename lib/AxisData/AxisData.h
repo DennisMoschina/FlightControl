@@ -7,7 +7,11 @@
 #include <Arduino.h>
 #include <stdexcept>
 
-
+/**
+ * @brief An ordered triple of some type.
+ * @author Dennis Moschina
+ * @version 1.0
+ */
 template<typename T> struct AxisData {
     static const int YAW = 0;
     static const int X = 0;

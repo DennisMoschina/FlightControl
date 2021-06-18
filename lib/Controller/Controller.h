@@ -10,6 +10,11 @@
 
 #include <functional>
 
+/**
+ * @brief Manage the calculation of the output based on the steering signals.
+ * @author Dennis Moschina
+ * @version 1.0
+ */
 class Controller {
 public:
     Controller(OutputCalculator* outputCalculator,
@@ -25,12 +30,12 @@ public:
                 Switch* pidSwitch);
 
     /**
-     * Create the task for the controller to process the inputs.
+     * @brief Create the task for the controller to process the inputs.
      */
     void begin();
 
     /**
-     * Stop the task of the Controller putting out the data.
+     * @brief Stop the task of the Controller putting out the data.
      */
     void stop();
 

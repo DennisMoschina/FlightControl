@@ -3,6 +3,11 @@
 
 #include <AxisData.h>
 
+/**
+ * @brief Read the rotation rate.
+ * @author Dennis Moschina
+ * @version 1.0
+ */
 class RotationReader {
 public:
     /**
