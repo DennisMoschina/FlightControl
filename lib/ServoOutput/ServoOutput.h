@@ -4,7 +4,7 @@
 #include <RotationRateOuput.h>
 
 /**
- * A {@link RotationRateOutput} in form of a servo.
+ * @brief A {@link RotationRateOutput} in form of a servo.
  * @author Dennis Moschina
  * @version 1.0
  */
