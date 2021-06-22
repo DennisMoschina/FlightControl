@@ -3,7 +3,12 @@
 
 class ThrottleReader {
 public:
+    ThrottleReader(int resolution = 1024) {
+        this->resolution = resolution;
+    }
+
     virtual int getThrottle() = 0;
+    virtual int getRawThrottle() = 0;
 
     void setResolution(int resolution) {
         this->resolution = resolution;
@@ -13,7 +18,7 @@ public:
     }
 
 protected:
-    int resolution = 1024;
+    int resolution;
 };
 
 #endif

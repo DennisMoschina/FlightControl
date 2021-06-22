@@ -21,6 +21,12 @@
 #include <Menu.h>
 #include <SerialMonitorInterface.h>
 
+#include <ServoThrottleReader.h>
+#include <ServoThrottleOutput.h>
+
+#define THROTTLE_INPUT_PIN 1
+#define THROTTLE_OUTPUT_PIN 1
+
 #define GEAR_INPUT_PIN 27
 
 #define RUDDER_INPUT_PIN 14
@@ -42,6 +48,12 @@ int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
 
 RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
+
+ServoInputSignal* throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+ThrottleReader* throttleInputReader = new ServoThrottleReader(throttleInput);
+
+Servo throttleServo;
+ThrottleOutput* throttleOutput = new ServoThrottleOutput(&throttleServo);
 
 ServoInputSignal* gearInput = new ServoInputPin<GEAR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
 
@@ -79,7 +91,7 @@ private:
 
 PIDSwitch pidSwitch = PIDSwitch(gearInput);
 
-Controller controller(&outputCalculator, rateOutputs, &servoInputs, &pidSwitch);
+Controller controller(&outputCalculator, rateOutputs, throttleOutput, &servoInputs, throttleInputReader, &pidSwitch);
 
 Menu menu(&controller, rateOutputs, &servoInputs);
 
@@ -113,6 +125,7 @@ void setup() {
     aileServo.attach(AILE_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
     elevatorServo.setPeriodHertz(50);
     elevatorServo.attach(ELEVATOR_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    throttleServo.attach(THROTTLE_OUTPUT_PIN);
 
     aileOutput->setMiddle(1420);
     elevatorOutput->setMiddle(1600);

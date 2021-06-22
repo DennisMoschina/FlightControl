@@ -12,7 +12,7 @@ Controller::Controller(OutputCalculator* outputCalculator,
 
 Controller::Controller(OutputCalculator* outputCalculator,
                 AxisData<ServoOutput*> outputServos,
-                ServoOutput* throttleOutput,
+                ThrottleOutput* throttleOutput,
                 ServoInputReader* servoInputs,
                 ThrottleReader* throttleInput,
                 Switch* pidSwitch) : Controller(outputCalculator, outputServos, servoInputs, pidSwitch) {
@@ -59,6 +59,7 @@ void Controller::controlWithThrottle() {
                                                                     this->throttleInput->getResolution());
 
     this->writeOutputs(output);
+    this->throttleOutput->write(this->throttleInput->getRawThrottle());
 
     delay(20);
 }

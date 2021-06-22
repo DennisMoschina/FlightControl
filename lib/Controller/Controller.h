@@ -7,6 +7,7 @@
 #include <Switch.h>
 #include <ServoOutput.h>
 #include <ThrottleReader.h>
+#include <ThrottleOutput.h>
 
 #include <functional>
 
@@ -24,7 +25,7 @@ public:
 
     Controller(OutputCalculator* outputCalculator,
                 AxisData<ServoOutput*> outputServos,
-                ServoOutput* throttleOutput,
+                ThrottleOutput* throttleOutput,
                 ServoInputReader* servoInputs,
                 ThrottleReader* throttleInput,
                 Switch* pidSwitch);
@@ -42,7 +43,7 @@ public:
 private:
     OutputCalculator* outputCalculator;
     AxisData<ServoOutput*> outputServos;
-    ServoOutput* throttleOutput;
+    ThrottleOutput* throttleOutput;
     ServoInputReader* servoInputs;
     ThrottleReader* throttleInput;
     Switch* pidSwitch;
