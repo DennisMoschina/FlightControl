@@ -24,8 +24,8 @@
 #include <ServoThrottleReader.h>
 #include <ServoThrottleOutput.h>
 
-#define THROTTLE_INPUT_PIN 1
-#define THROTTLE_OUTPUT_PIN 1
+#define THROTTLE_INPUT_PIN 5
+#define THROTTLE_OUTPUT_PIN 2
 
 #define GEAR_INPUT_PIN 27
 
