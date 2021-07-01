@@ -233,7 +233,7 @@ RotationData PID::calculateOutput(RotationData setpoint,
     log_v("termI\t\t\tx:%5d, y:%5d, z:%5d", termI.x, termI.y, termI.z);
     log_v("termD\t\t\tx:%5d, y:%5d, z:%5d", termD.x, termD.y, termD.z);
 
-    log_v("Output pre cap\t\t\tx:%5d, y:%5d, z:%5d", output.x, output.y, output.z);
+    log_v("Output pre cap\t\tx:%5d, y:%5d, z:%5d", output.x, output.y, output.z);
 
     for (int i = 0; i < 3; i++) {
         output[i] *= this->axisInvert[i] ? -1 : 1;

@@ -49,9 +49,8 @@ void Controller::controlWithThrottle() {
     this->outputCalculator->setCalculate(this->pidSwitch->getBoolean());
 
     RotationData servoInput = this->servoInputs->readInput();
-    log_d("Input\t\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
-
     int throttleSignal = this->throttleInput->getThrottle();
+    log_d("Input\t\tx:%5d, y:%5d, z:%5d, t:%5d", servoInput.x, servoInput.y, servoInput.z, throttleSignal);
 
     RotationData output = this->outputCalculator->calculateOutput(servoInput,
                                                                     this->servoInputs->getResolution(),
