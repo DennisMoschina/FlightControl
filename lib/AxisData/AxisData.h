@@ -23,14 +23,17 @@ template<typename T> struct AxisData {
     union {
         T x;
         T yaw;
+        T rudder;
     };
     union {
         T y;
         T pitch;
+        T elevator;
     };
     union {
         T z;
         T roll;
+        T aileron;
     };
 
 
