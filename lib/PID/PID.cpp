@@ -1,8 +1,8 @@
 #include <PID.h>
 
 #define DEFAULT_P_GAIN 0.25
-#define DEFAULT_I_GAIN 0.05
-#define DEFAULT_D_GAIN 0.15
+#define DEFAULT_I_GAIN 0//.05
+#define DEFAULT_D_GAIN 0//.15
 
 #define DEFAULT_FEED_FORWARD 0.138
 
@@ -20,6 +20,8 @@
 #define DEFAULT_ANTI_WINDUP 100
 
 PID::PID() {
+    log_d("resolution: %d", this->resolution);
+
     this->setPGain(0, DEFAULT_P_GAIN_YAW);
     this->setPGain(1, DEFAULT_P_GAIN_PITCH);
     this->setPGain(2, DEFAULT_P_GAIN_ROLL);
@@ -28,13 +30,17 @@ PID::PID() {
     this->setIGain(1, DEFAULT_I_GAIN);
     this->setIGain(2, DEFAULT_I_GAIN_ROLL);
 
-    this->setMinThrottlePGain(this->gainP * 2);
-    this->setMinThrottleIGain(this->gainI * 2);
-    this->setMinThrottleDGain(this->gainD * 2);
+    this->setDGain(DEFAULT_D_GAIN);
+    this->setDGain(2, DEFAULT_D_GAIN_ROLL);
 
-    this->gainD.roll = DEFAULT_D_GAIN_ROLL;
+    log_i("get P-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->getPGain().yaw, this->getPGain().pitch, this->getPGain().roll);
+    log_i("get I-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->getIGain().yaw, this->getIGain().pitch, this->getIGain().roll);
+    log_i("get D-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->getDGain().yaw, this->getDGain().pitch, this->getDGain().roll);
+    
 
-    this->gainD = DEFAULT_D_GAIN;
+    this->setMinThrottlePGain(this->getPGain() * 2);
+    this->setMinThrottleIGain(this->getIGain() * 2);
+    this->setMinThrottleDGain(this->getDGain() * 2);
 
     this->relaxI = DEFAULT_I_RELAX;
     this->setAntiWindup(DEFAULT_ANTI_WINDUP);
@@ -42,6 +48,14 @@ PID::PID() {
     this->axisInvert = true;
 
     this->setFeedForward(DEFAULT_FEED_FORWARD);
+
+    log_i("P-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->gainP.yaw, this->gainP.pitch, this->gainP.roll);
+    log_i("I-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->gainI.yaw, this->gainI.pitch, this->gainI.roll);
+    log_i("D-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->gainD.yaw, this->gainD.pitch, this->gainD.roll);
+    log_i("min throttle P-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->minThrottleGainP.yaw, this->minThrottleGainP.pitch, this->minThrottleGainP.roll);
+    log_i("min throttle I-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->minThrottleGainI.yaw, this->minThrottleGainI.pitch, this->minThrottleGainI.roll);
+    log_i("min throttle D-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->minThrottleGainD.yaw, this->minThrottleGainD.pitch, this->minThrottleGainD.roll);
+
 }
 
 RotationData PID::loop(RotationData setpoint, RotationData rotationRate) {
@@ -75,27 +89,30 @@ RotationData PID::loop(RotationData setpoint,
 
 
 void PID::setPGain(byte axis, float gain) {
-    this->gainP[axis] = gain * (this->resolution / 100);
+    this->gainP[axis] = gain * ((float)this->resolution / (float)100);
+    log_d("axis %d: \t gainTo %7.2f, \t gainIs %7.2f", axis, gain, this->gainP[axis]);
 }
 
 void PID::setIGain(byte axis, float gain) {
-    this->gainI[axis] = gain * (this->resolution / 100);
+    this->gainI[axis] = gain * ((float)this->resolution / (float)100);
+    log_d("axis %d: \t gainTo %7.2f, \t gainIs %7.2f", axis, gain, this->gainI[axis]);
 }
 
 void PID::setDGain(byte axis, float gain) {
-    this->gainD[axis] = gain * (this->resolution / 100);
+    this->gainD[axis] = gain * ((float)this->resolution / (float)100);
+    log_d("axis %d: \t gainTo %7.2f, \t gainIs %7.2f", axis, gain, this->gainD[axis]);
 }
 
 void PID::setPGain(CorrectionData pGain) {
-    this->gainP = pGain * (this->resolution / 100);
+    this->gainP = pGain * ((float)this->resolution / (float)100);
 }
 
 void PID::setIGain(CorrectionData iGain) {
-    this->gainI = iGain * (this->resolution / 100);
+    this->gainI = iGain * ((float)this->resolution / (float)100);
 }
 
 void PID::setDGain(CorrectionData dGain) {
-    this->gainD = dGain * (this->resolution / 100);
+    this->gainD = dGain * ((float)this->resolution / (float)100);
 }
 
 
@@ -160,37 +177,56 @@ void PID::setRelaxI(float relaxI) {
 
 
 
+CorrectionData PID::getPGain() {
+    return this->gainP * ((float)100 / (float)this->resolution);
+}
+CorrectionData PID::getIGain() {
+    return this->gainI * ((float)100 / (float)this->resolution);
+}
+CorrectionData PID::getDGain() {
+    return this->gainD * ((float)100 / (float)this->resolution);
+}
+
+CorrectionData PID::getMinThrottlePGain() {
+    return this->minThrottleGainP * ((float)100 / (float)this->resolution);
+}
+CorrectionData PID::getMinThrottleIGain() {
+    return this->minThrottleGainI * ((float)100 / (float)this->resolution);
+}
+CorrectionData PID::getMinThrottleDGain() {
+    return this->minThrottleGainD * ((float)100 / (float)this->resolution);
+}
 
 
 void PID::setMinThrottlePGain(float pGain) {
-    this->minThrottleGainP = pGain * (this->resolution / 100);
+    this->minThrottleGainP = pGain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleIGain(float iGain) {
-    this->minThrottleGainI = iGain * (this->resolution / 100);
+    this->minThrottleGainI = iGain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleDGain(float dGain) {
-    this->minThrottleGainD = dGain * (this->resolution / 100);
+    this->minThrottleGainD = dGain * ((float)this->resolution / (float)100);
 }
 
 void PID::setMinThrottlePGain(byte axis, float gain) {
-    this->minThrottleGainP[axis] = gain;
+    this->minThrottleGainP[axis] = gain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleIGain(byte axis, float gain) {
-    this->minThrottleGainI[axis] = gain;
+    this->minThrottleGainI[axis] = gain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleDGain(byte axis, float gain) {
-    this->minThrottleGainD[axis] = gain;
+    this->minThrottleGainD[axis] = gain * ((float)this->resolution / (float)100);
 }
 
 
 void PID::setMinThrottlePGain(CorrectionData pGain) {
-    this->minThrottleGainP = pGain;
+    this->minThrottleGainP = pGain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleIGain(CorrectionData iGain) {
-    this->minThrottleGainI = iGain;
+    this->minThrottleGainI = iGain * ((float)this->resolution / (float)100);
 }
 void PID::setMinThrottleDGain(CorrectionData dGain) {
-    this->minThrottleGainD = dGain;
+    this->minThrottleGainD = dGain * ((float)this->resolution / (float)100);
 }
 
 

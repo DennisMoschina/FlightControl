@@ -125,6 +125,13 @@ public:
     void setIGain(float iGain);
     void setDGain(float dGain);
 
+    CorrectionData getPGain();
+    CorrectionData getIGain();
+    CorrectionData getDGain();
+
+    CorrectionData getMinThrottlePGain();
+    CorrectionData getMinThrottleIGain();
+    CorrectionData getMinThrottleDGain();
  
     /**
      * @brief Set the border for the interval.
@@ -178,7 +185,7 @@ private:
      */
     std::function<float (float, float, int, int)> gainCalculator
         = [](float minThrottleGain, float maxThrottleGain, int throttle, int throttleRes) {
-                return map(throttle, 0, throttleRes, minThrottleGain, maxThrottleGain);
+                return (float)(throttle - 0) * (minThrottleGain - maxThrottleGain) / (float)(throttleRes - 0) + maxThrottleGain;
             };
 
     CorrectionData gainCreator(int throttle,
