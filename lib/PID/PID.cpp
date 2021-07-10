@@ -28,6 +28,10 @@ PID::PID() {
     this->setIGain(1, DEFAULT_I_GAIN);
     this->setIGain(2, DEFAULT_I_GAIN_ROLL);
 
+    this->setMinThrottlePGain(this->gainP * 2);
+    this->setMinThrottleIGain(this->gainI * 2);
+    this->setMinThrottleDGain(this->gainD * 2);
+
     this->gainD.roll = DEFAULT_D_GAIN_ROLL;
 
     this->gainD = DEFAULT_D_GAIN;
