@@ -49,31 +49,31 @@ int16_t MAX_ROLL_RATE = 720;
 
 RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
 
-ServoInputSignal* throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-ThrottleReader* throttleInputReader = new ServoThrottleReader(throttleInput);
+ServoInputSignal* throttleInput;
+ThrottleReader* throttleInputReader;
 
 Servo throttleServo;
-ThrottleOutput* throttleOutput = new ServoThrottleOutput(&throttleServo);
+ThrottleOutput* throttleOutput;
 
-ServoInputSignal* gearInput = new ServoInputPin<GEAR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+ServoInputSignal* gearInput;
 
-ServoInputSignal* rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-ServoInputSignal* elevatorInput = new ServoInputPin<ELEVATOR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-ServoInputSignal* aileInput = new ServoInputPin<AILE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-ServoInputReader servoInputs(AxisData<ServoInputSignal*> { rudderInput, elevatorInput, aileInput });
+ServoInputSignal* rudderInput;
+ServoInputSignal* elevatorInput;
+ServoInputSignal* aileInput;
+ServoInputReader* servoInputs;
 
 Servo rudderServo;
 Servo aileServo;
 Servo elevatorServo;
-ServoOutput* rudderOutput = new SingleServoOutput(&rudderServo);
-ServoOutput* aileOutput = new SingleServoOutput(&aileServo);
-ServoOutput* elevatorOutput = new SingleServoOutput(&elevatorServo);
-AxisData<ServoOutput*> rateOutputs { rudderOutput, elevatorOutput, aileOutput };
+ServoOutput* rudderOutput;
+ServoOutput* aileOutput;
+ServoOutput* elevatorOutput;
+AxisData<ServoOutput*> rateOutputs;
 
-MPU6050 mpu = MPU6050();
-PID pid = PID();
+MPU6050* mpu;
+PID* pid;
 
-OutputCalculator outputCalculator(maxRates, &mpu, &pid);
+OutputCalculator* outputCalculator;
 
 class PIDSwitch : public Switch {
 public:
@@ -89,24 +89,60 @@ private:
     ServoInputSignal* switchServo;
 };
 
-PIDSwitch pidSwitch = PIDSwitch(gearInput);
+PIDSwitch* pidSwitch;
 
-Controller controller(&outputCalculator, rateOutputs, throttleOutput, &servoInputs, throttleInputReader, &pidSwitch);
+Controller* controller;
 
-Menu menu(&controller, rateOutputs, &servoInputs);
+Menu* menu;
 
-UserInterface* userInterface = new SerialMonitorInterface(&menu);
+UserInterface* userInterface;
+
+void init() {
+    rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+    elevatorInput = new ServoInputPin<ELEVATOR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+    aileInput = new ServoInputPin<AILE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+    servoInputs = new ServoInputReader(AxisData<ServoInputSignal*> { rudderInput, elevatorInput, aileInput });
+
+    gearInput = new ServoInputPin<GEAR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+
+    rudderOutput = new SingleServoOutput(&rudderServo);
+    aileOutput = new SingleServoOutput(&aileServo);
+    elevatorOutput = new SingleServoOutput(&elevatorServo);
+
+    rateOutputs.rudder = rudderOutput;
+    rateOutputs.elevator = elevatorOutput;
+    rateOutputs.aileron = aileOutput;
+
+    throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+    throttleInputReader = new ServoThrottleReader(throttleInput);
+    throttleOutput = new ServoThrottleOutput(&throttleServo);
+
+    pidSwitch = new PIDSwitch(gearInput);
+
+    mpu = new MPU6050();
+    pid = new PID();
+
+    outputCalculator = new OutputCalculator(maxRates, mpu, pid);
+
+    controller = new Controller(outputCalculator, rateOutputs, throttleOutput, servoInputs, throttleInputReader, pidSwitch);
+
+    menu = new Menu(controller, rateOutputs, servoInputs);
+    userInterface = new SerialMonitorInterface(menu);
+
+}
 
 void setup() {
     Serial.begin(115200);
 
-    mpu.remapAxis(0, 1);
-    mpu.remapAxis(1, 0);
+    init();
+    
+    mpu->remapAxis(0, 1);
+    mpu->remapAxis(1, 0);
 
-    pid.setAxisInvert( { false, false, true } );
-    servoInputs.setInvert( { false, false, false } );
+    pid->setAxisInvert( { false, false, true } );
+    servoInputs->setInvert( { false, false, false } );
 
-    mpu.begin();
+    mpu->begin();
 
     log_v("Servo range: %d", rudderInput->getRange());
 
@@ -130,7 +166,7 @@ void setup() {
     aileOutput->setMiddle(1420);
     elevatorOutput->setMiddle(1600);
 
-    controller.begin();
+    controller->begin();
 }
 
 void loop() {
