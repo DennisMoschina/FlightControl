@@ -3,9 +3,10 @@
 
 #include <stdexcept>
 
+template<int dimensions = 1>
 class Filter {
 public:
-    virtual float addValue(float value) = 0;
+    virtual float[dimensions] addValue(float[dimensions] value) = 0;
 };
 
 #endif
