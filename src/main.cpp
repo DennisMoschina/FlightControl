@@ -24,6 +24,9 @@
 #include <ServoThrottleReader.h>
 #include <ServoThrottleOutput.h>
 
+#include <EWMA.h>
+#include <FilteredGyro.h>
+
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2
 
@@ -72,6 +75,8 @@ AxisData<ServoOutput*> rateOutputs;
 
 MPU6050* mpu;
 PID* pid;
+EWMA<int, 3>* filter;
+FilteredGyro* gyro;
 
 OutputCalculator* outputCalculator;
 
@@ -121,8 +126,11 @@ void init() {
 
     mpu = new MPU6050();
     pid = new PID();
+    filter = new EWMA<int, 3>();
+    gyro = new FilteredGyro(mpu, filter);
 
-    outputCalculator = new OutputCalculator(maxRates, mpu, pid);
+
+    outputCalculator = new OutputCalculator(maxRates, gyro, pid);
 
     controller = new Controller(outputCalculator, rateOutputs, throttleOutput, servoInputs, throttleInputReader, pidSwitch);
 
