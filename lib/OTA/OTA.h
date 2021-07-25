@@ -6,7 +6,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-#include <NetworkCredencials.h>
+#include <NetworkCredentials.h>
 
 void startOTA() {
     log_i("Booting");
