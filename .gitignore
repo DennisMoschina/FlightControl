@@ -5,3 +5,4 @@ terminalOutput/output.txt
 include/WiFiResources.h
 .DS_Store
 .vscode/
+lib/OTA/NetworkCredentials.h
