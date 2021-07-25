@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include <OTA.h>
+
 #include <map>
 #include <Wire.h>
 
@@ -17,9 +19,6 @@
 #include <RotationRateOuput.h>
 #include <SingleServoOutput.h>
 #include <ServoOutput.h>
-
-#include <Menu.h>
-#include <SerialMonitorInterface.h>
 
 #include <ServoThrottleReader.h>
 #include <ServoThrottleOutput.h>
@@ -98,9 +97,6 @@ PIDSwitch* pidSwitch;
 
 Controller* controller;
 
-Menu* menu;
-
-UserInterface* userInterface;
 
 void init() {
     rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
@@ -134,13 +130,12 @@ void init() {
 
     controller = new Controller(outputCalculator, rateOutputs, throttleOutput, servoInputs, throttleInputReader, pidSwitch);
 
-    menu = new Menu(controller, rateOutputs, servoInputs);
-    userInterface = new SerialMonitorInterface(menu);
-
 }
 
 void setup() {
     Serial.begin(115200);
+    
+    startOTA();
 
     init();
     
@@ -177,7 +172,4 @@ void setup() {
     controller->begin();
 }
 
-void loop() {
-    userInterface->handle();
-    delay(100);
-}
+void loop() {}
