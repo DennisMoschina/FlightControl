@@ -43,6 +43,7 @@ std::array<T, dimensions> EWMA<T, dimensions>::addValue(T value[]) {
         }
     } else {
         for (int i = 0; i < dimensions; i++) this->value[i] = value[i];
+        this->hasValue = true;
     }
 
     std::array<T, dimensions> output;
