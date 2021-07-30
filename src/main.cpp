@@ -71,7 +71,7 @@ AxisData<ServoOutput*> rateOutputs;
 
 MPU6050* mpu;
 PID* pid;
-EWMA<int, 3>* filter;
+Filter<int, 3>* filter;
 FilteredGyro* gyro;
 
 OutputCalculator* outputCalculator;
@@ -118,7 +118,7 @@ void init() {
 
     mpu = new MPU6050();
     pid = new PID();
-    filter = new EWMA<int, 3>();
+    filter = new EWMA<int, 3>(0.6);
     gyro = new FilteredGyro(mpu, filter);
 
 
