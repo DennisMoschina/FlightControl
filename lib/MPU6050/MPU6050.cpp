@@ -5,21 +5,21 @@ MPU6050::MPU6050(byte sda, byte scl) {
     for (int i = 0; i < 3; i++) this->remapAxis(i, i);
 }
 
+void MPU6050::setGyroRange(mpu6050_gyr_range gyroRange) {
+    this->writeRegister(GYRO_CONFIG_REGISTER, gyroRange<<3);
+    this->gyroRange = gyroRange;
+}
+
+void MPU6050::setAccelRange(mpu6050_acc_range accelRange) {
+    this->writeRegister(ACCELEROMETER_CONFIG_REGISTER, accelRange<<3);
+    this->accelRange = accelRange;
+}
+
 void MPU6050::begin() {
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(POWER_MANAGEMENT_REGISTER);
-    Wire.write(0);                              //wake up MPU-6050
-    Wire.endTransmission(true);
+    this->writeRegister(POWER_MANAGEMENT_REGISTER, 0);  //wake up MPU-6050
 
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(GYRO_CONFIG_REGISTER);
-    Wire.write(0);                              //set gyro to full scale
-    Wire.endTransmission(true);
-
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(ACCELEROMETER_CONFIG_REGISTER);
-    Wire.write(0);                              //set accelerometer to +/- 2g
-    Wire.endTransmission(true);
+    this->setAccelRange(MPU6050_ACC_RANGE_2G);
+    this->setGyroRange(MPU6050_GYR_RANGE_2000);
 
     delay(1000);
 
@@ -34,14 +34,12 @@ void MPU6050::begin() {
 RawAxisData MPU6050::readGyro() {
     RawAxisData gyroReadings = this->readAxisData(GYRO_READING_REGISTER);
     gyroReadings -= this->gyroOffset;
-
     return gyroReadings;
 }
 
 RawAxisData MPU6050::readAccel() {
     RawAxisData accelReadings = this->readAxisData(ACCEL_READING_REGISTER);
     accelReadings -= this->accelOffset;
-
     return accelReadings;
 }
 
@@ -63,9 +61,18 @@ RawAxisData MPU6050::readAxisData(int registerPos) {
 RotationData MPU6050::getRotation() {
     RawAxisData gyroData = this->readGyro();
     RotationData rotation;
-    rotation.x = ROTATION_DATA_TYPE(gyroData.x) / DEGREE_PER_SECOND;
-    rotation.y = ROTATION_DATA_TYPE(gyroData.y) / DEGREE_PER_SECOND;
-    rotation.z = ROTATION_DATA_TYPE(gyroData.z) / DEGREE_PER_SECOND;
+    log_d("Raw values:\tx:%6d\ty:%6d\tz:%6d", gyroData.x, gyroData.y, gyroData.z);
+    log_d("gyroRange:\t%6d", this->gyroRangeValues[this->gyroRange]);
+
+    int rangeFactor = this->gyroRangeValues[this->gyroRange] / this->gyroRangeValues[0];
+    for (int i = 0; i < 3; i++) {
+        int helperValue = gyroData[i] / MIN_RANGE_RESOLUTION_GYRO;
+        log_d("raw value / 131: axis %d:\t%6d", i, helperValue);
+        log_d("calculated value:\t%6d", rangeFactor * helperValue);
+        rotation[i] = rangeFactor * helperValue;
+    }
+
+    log_d("final values::\tx:%6d\ty:%6d\tz:%6d\n", gyroData.x, gyroData.y, gyroData.z);
 
     return rotation;
 }
@@ -135,4 +142,11 @@ RawAxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) 
     offset.z = z[middle];
 
     return offset;
+}
+
+void MPU6050::writeRegister(uint16_t reg, byte value) {
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(reg); 
+    Wire.write(value); 
+    Wire.endTransmission(true);
 }

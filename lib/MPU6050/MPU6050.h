@@ -17,7 +17,7 @@
 
 #define AXIS_DATA_REGISTER_SIZE 6
 
-#define DEGREE_PER_SECOND 131
+#define MIN_RANGE_RESOLUTION_GYRO 131
 
 /**
  * @brief Read data from the MPU6050 sensor easily.
@@ -26,7 +26,32 @@
  */
 class MPU6050 : public virtual RotationReader {
 public:
+    typedef enum {
+        MPU6050_ACC_RANGE_2G,  // +/- 2g (default)
+        MPU6050_ACC_RANGE_4G,  // +/- 4g
+        MPU6050_ACC_RANGE_8G,  // +/- 8g
+        MPU6050_ACC_RANGE_16G // +/- 16g
+    } mpu6050_acc_range;
+    typedef enum {
+        MPU6050_GYR_RANGE_250,  // +/- 250 deg/s (default)
+        MPU6050_GYR_RANGE_500,  // +/- 500 deg/s
+        MPU6050_GYR_RANGE_1000, // +/- 1000 deg/s
+        MPU6050_GYR_RANGE_2000  // +/- 2000 deg/s
+    } mpu6050_gyr_range;
+
     MPU6050(byte sda = 21, byte scl = 22);
+
+    /**
+     * @brief Set the range for the Gyro.
+     * @param gyroRange the new range for the gyro
+     */
+    void setGyroRange(mpu6050_gyr_range gyroRange);
+
+    /**
+     * @brief Set the range for the Accelerometer.
+     * @param accelRange the new range for the accelerometer
+     */
+    void setAccelRange(mpu6050_acc_range accelRange);
 
     /**
      * @brief Initialize the MPU6050.
@@ -75,18 +100,21 @@ public:
      */
     void remapAxis(AxisData<byte> to);
 
-
 private:
     RawAxisData gyroOffset;
     RawAxisData accelOffset;
+    AxisData<byte> axisMap;
+    AxisData<boolean> invertOutput;
+
+    mpu6050_gyr_range gyroRange;
+    mpu6050_acc_range accelRange;
+
+    int gyroRangeValues[4] = {250, 500, 1000, 2000};
+    int accelRangeValues[4] = {2, 4, 8, 16};
 
     RawAxisData readAxisData(int registerPos);
-
     RawAxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);
-
-    AxisData<byte> axisMap;
-
-    AxisData<boolean> invertOutput;
+    void writeRegister(uint16_t reg, byte value);
 };
 
 #endif
