@@ -16,8 +16,12 @@ void MPU6050::setAccelRange(mpu6050_acc_range accelRange) {
 }
 
 void MPU6050::begin() {
-    this->writeRegister(POWER_MANAGEMENT_REGISTER, 0);  //wake up MPU-6050
+    log_i("start the MPU6050");
 
+    log_v("waking up MPU");
+    this->writeRegister(POWER_MANAGEMENT_REGISTER, 0);  //wake up MPU-6050
+    log_v("woke up MPU");
+    
     this->setAccelRange(MPU6050_ACC_RANGE_2G);
     this->setGyroRange(MPU6050_GYR_RANGE_2000);
 
