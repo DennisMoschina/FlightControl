@@ -1,6 +1,6 @@
 #include <FilteredGyro.h>
 
-FilteredGyro::FilteredGyro(RotationReader* gyro, Filter<int, 3>* filter) {
+FilteredGyro::FilteredGyro(Gyro* gyro, Filter<int, 3>* filter) {
     this->gyro = gyro;
     this->filter = filter;
 }

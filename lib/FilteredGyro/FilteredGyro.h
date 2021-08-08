@@ -4,14 +4,14 @@
 #include <RotationReader.h>
 #include <Filter.h>
 
-class FilteredGyro : public RotationReader {
+class FilteredGyro : public Gyro {
 public:
-    FilteredGyro(RotationReader* gyro, Filter<int, 3>* filter);
+    FilteredGyro(Gyro* gyro, Filter<int, 3>* filter);
 
     RotationData getRotation();
 
 private:
-    RotationReader* gyro;
+    Gyro* gyro;
     Filter<int, 3>* filter;
 };
 
