@@ -1,7 +1,5 @@
 #include <OutputCalculator.h>
 
-#include <RotationReader.h>
-
 OutputCalculator::OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer) {
     this->maxRates = maxRates;
     this->rotationReader = rotationReader;

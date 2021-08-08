@@ -2,10 +2,8 @@
 #define _MPU6050_H
 
 #include <Arduino.h>
-
 #include <Wire.h>
-
-#include <RotationReader.h>
+#include <Gyro.h>
 
 #define MPU_ADDR 0x68
 #define POWER_MANAGEMENT_REGISTER 0x6B

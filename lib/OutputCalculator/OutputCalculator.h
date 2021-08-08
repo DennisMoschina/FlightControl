@@ -3,7 +3,7 @@
 
 #include <AxisData.h>
 #include <Stabilizer.h>
-#include <RotationReader.h>
+#include <Gyro.h>
 
 /**
  * @brief Calculate the output based on the steering signal and the actual rotation.

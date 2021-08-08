@@ -1,7 +1,7 @@
 #ifndef _FILTERED_GYRO_H
 #define _FILTERED_GYRO_H
 
-#include <RotationReader.h>
+#include <Gyro.h>
 #include <Filter.h>
 
 class FilteredGyro : public Gyro {
