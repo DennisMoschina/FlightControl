@@ -12,7 +12,7 @@
  */
 class OutputCalculator {
 public:
-    OutputCalculator(RotationData maxRates, RotationReader* rotationReader, Stabilizer* stabilizer);
+    OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer);
 
     /**
      * Calculate the output to match the steering signals.
@@ -43,7 +43,7 @@ public:
 
 private:
     Stabilizer* stabilizer;
-    RotationReader* rotationReader;
+    Gyro* rotationReader;
 
     RotationData maxRates;
 

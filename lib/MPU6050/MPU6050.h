@@ -24,7 +24,7 @@
  * @author Dennis Moschina
  * @version 1.0
  */
-class MPU6050 : public virtual RotationReader {
+class MPU6050 : public virtual Gyro {
 public:
     typedef enum {
         MPU6050_ACC_RANGE_2G,  // +/- 2g (default)

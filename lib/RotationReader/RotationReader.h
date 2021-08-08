@@ -8,7 +8,7 @@
  * @author Dennis Moschina
  * @version 1.0
  */
-class RotationReader {
+class Gyro {
 public:
     /**
      * Get the rotation rate in degrees per second.
