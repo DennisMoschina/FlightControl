@@ -22,7 +22,8 @@
 #include <EWMA.h>
 #include <FilteredGyro.h>
 
-#include <init.h>
+#include <GainCalculator.h>
+#include <PIDGainCalculator.h>
 
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2
@@ -50,7 +51,7 @@ extern int16_t MAX_ROLL_RATE;
 extern RotationData maxRates;
 
 extern ServoInputSignal* throttleInput;
-extern ThrottleReader* throttleInputReader;
+extern SpeedReader* throttleInputReader;
 
 extern Servo throttleServo;
 extern ThrottleOutput* throttleOutput;
@@ -76,6 +77,8 @@ extern Filter<int, 3>* filter;
 extern FilteredGyro* gyro;
 
 extern OutputCalculator* outputCalculator;
+extern GainCalculator* gainCalculator;
+
 
 class PIDSwitch : public Switch {
 public:

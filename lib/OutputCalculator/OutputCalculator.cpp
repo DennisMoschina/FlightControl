@@ -1,9 +1,10 @@
 #include <OutputCalculator.h>
 
-OutputCalculator::OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer) {
+OutputCalculator::OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer, GainCalculator* gainCalculator) {
     this->maxRates = maxRates;
     this->rotationReader = rotationReader;
     this->stabilizer = stabilizer;
+    this->gainCalculator = gainCalculator;
 }
 
 RotationData OutputCalculator::calculateOutput(RotationData servoInput, int resolution) {
@@ -24,14 +25,14 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput, int reso
 
 RotationData OutputCalculator::calculateOutput(RotationData servoInput,
                                 int resolution,
-                                int throttleInput,
-                                int throttleResolution) {
+                                int speed) {
     if (!this->shouldCalculate) return servoInput;
 
     RotationData setpoint = this->calculateSetpoint(servoInput, resolution);
 
     RotationData gyroReadings = rotationReader->getRotation();
-    RotationData output = stabilizer->loop(setpoint, gyroReadings, throttleInput, throttleResolution);
+    this->gainCalculator->calculateGains(speed);
+    RotationData output = stabilizer->loop(setpoint, gyroReadings);
 
     log_d("Input\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
     log_d("Gyro\t\tx:%5d, y:%5d, z:%5d", gyroReadings.x, gyroReadings.y, gyroReadings.z);

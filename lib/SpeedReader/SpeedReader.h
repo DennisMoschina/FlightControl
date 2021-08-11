@@ -1,14 +1,14 @@
-#ifndef _THROTTLE_READER_H
-#define _THROTTLE_READER_H
+#ifndef _SPEED_READER_H
+#define _SPEED_READER_H
 
-class ThrottleReader {
+class SpeedReader {
 public:
-    ThrottleReader(int resolution = 1024) {
+    SpeedReader(int resolution = 1024) {
         this->resolution = resolution;
     }
 
-    virtual int getThrottle() = 0;
-    virtual int getRawThrottle() = 0;
+    virtual int getSpeed() = 0;
+    virtual int getRawSpeed() = 0;
 
     void setResolution(int resolution) {
         this->resolution = resolution;

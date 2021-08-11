@@ -22,7 +22,7 @@
  * @author Dennis Moschina
  * @version 1.0
  */
-class MPU6050 : public virtual Gyro {
+class MPU6050 : public Gyro {
 public:
     typedef enum {
         MPU6050_ACC_RANGE_2G,  // +/- 2g (default)

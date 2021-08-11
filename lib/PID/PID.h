@@ -29,16 +29,6 @@ public:
     RotationData loop(RotationData setpoint, RotationData rotationRate);
 
     /**
-     * @brief Calculate the angular rate to output to counteract the error.
-     * @param setpoint the desired angular rate
-     * @param rotationRate the current angular rate
-     * @param throttleSignal the signal for the throttle
-     * @param throttleResolution the maximum value for the throttle
-     * @return the ratio of the maximum output (from -#resolution to #resolution)
-     */
-    RotationData loop(RotationData setpoint, RotationData rotationRate, int throttleSignal, int throttleResolution);
-
-    /**
      * @brief Set the P gain (for the maximum throttle).
      * @param axis the index of the axis (between 0 to 2)
      * @param gain the gain
@@ -72,6 +62,10 @@ public:
      * @param gain the gain
      */
     void setDGain(CorrectionData dGain);
+
+    void setPGain(float pGain);
+    void setIGain(float iGain);
+    void setDGain(float dGain);
 
     /**
      * @brief Set the feed forward.
@@ -108,31 +102,10 @@ public:
      */
     void setRelaxI(float relaxI);
 
-
-    void setMinThrottlePGain(float pGain);
-    void setMinThrottleIGain(float iGain);
-    void setMinThrottleDGain(float dGain);
-
-    void setMinThrottlePGain(byte axis, float gain);
-    void setMinThrottleIGain(byte axis, float gain);
-    void setMinThrottleDGain(byte axis, float gain);
-
-    void setMinThrottlePGain(CorrectionData pGain);
-    void setMinThrottleIGain(CorrectionData iGain);
-    void setMinThrottleDGain(CorrectionData dGain);
-
-    void setPGain(float pGain);
-    void setIGain(float iGain);
-    void setDGain(float dGain);
-
     CorrectionData getPGain();
     CorrectionData getIGain();
     CorrectionData getDGain();
 
-    CorrectionData getMinThrottlePGain();
-    CorrectionData getMinThrottleIGain();
-    CorrectionData getMinThrottleDGain();
- 
     /**
      * @brief Set the border for the interval.
      * @param antiWindup the new boarder for the interval
@@ -161,10 +134,6 @@ private:
     CorrectionData gainI;
     CorrectionData gainD;
 
-    CorrectionData minThrottleGainP;
-    CorrectionData minThrottleGainI;
-    CorrectionData minThrottleGainD;
-
     CorrectionData feedForward;
 
     CorrectionData relaxI;
@@ -176,22 +145,6 @@ private:
     RotationData oldRotationRate;
 
     AxisData<boolean> axisInvert;
-
-    /**
-     * @param minThrottleGain the gain for the minimal throttle
-     * @param maxThrottleGain the gain for the maximal throttle
-     * @param throttle the current throttle
-     * @param throttleRes the maximum throttle
-     */
-    std::function<float (float, float, int, int)> gainCalculator
-        = [](float minThrottleGain, float maxThrottleGain, int throttle, int throttleRes) {
-                return (float)(throttle - 0) * (minThrottleGain - maxThrottleGain) / (float)(throttleRes - 0) + maxThrottleGain;
-            };
-
-    CorrectionData gainCreator(int throttle,
-                                int throttleRes,
-                                CorrectionData minThrottleGain,
-                                CorrectionData maxThrottleGain);
 
     RotationData calculateOutput(RotationData setpoint,
                                 RotationData rotationRate,

@@ -7,7 +7,7 @@ int16_t MAX_ROLL_RATE = 720;
 RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
 
 ServoInputSignal* throttleInput;
-ThrottleReader* throttleInputReader;
+SpeedReader* throttleInputReader;
 Servo throttleServo;
 ThrottleOutput* throttleOutput;
 ServoInputSignal* gearInput;
@@ -29,6 +29,7 @@ FilteredGyro* filteredGyro;
 OutputCalculator* outputCalculator;
 PIDSwitch* pidSwitch;
 Controller* controller;
+GainCalculator* gainCalculator;
 
 void assign() {
     rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
@@ -57,8 +58,9 @@ void assign() {
     filter = new EWMA<int, 3>(0.6);
     filteredGyro = new FilteredGyro(mpu, filter);
 
+    gainCalculator = new PIDGainCalculator(pid);
 
-    outputCalculator = new OutputCalculator(maxRates, filteredGyro, pid);
+    outputCalculator = new OutputCalculator(maxRates, filteredGyro, pid, gainCalculator);
 
     controller = new Controller(outputCalculator, rateOutputs, throttleOutput, servoInputs, throttleInputReader, pidSwitch);    
 }

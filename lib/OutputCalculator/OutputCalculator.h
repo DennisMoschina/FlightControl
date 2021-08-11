@@ -4,6 +4,7 @@
 #include <AxisData.h>
 #include <Stabilizer.h>
 #include <Gyro.h>
+#include <GainCalculator.h>
 
 /**
  * @brief Calculate the output based on the steering signal and the actual rotation.
@@ -12,7 +13,7 @@
  */
 class OutputCalculator {
 public:
-    OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer);
+    OutputCalculator(RotationData maxRates, Gyro* rotationReader, Stabilizer* stabilizer, GainCalculator* gainCalculator = nullptr);
 
     /**
      * Calculate the output to match the steering signals.
@@ -32,8 +33,7 @@ public:
      */
     RotationData calculateOutput(RotationData servoInput,
                                 int resolution,
-                                int throttleInput,
-                                int throttleResolution);
+                                int speed);
 
     /**
      * Enable the stabilizer.
@@ -44,6 +44,7 @@ public:
 private:
     Stabilizer* stabilizer;
     Gyro* rotationReader;
+    GainCalculator* gainCalculator;
 
     RotationData maxRates;
 

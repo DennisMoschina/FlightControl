@@ -6,7 +6,7 @@
 #include <ServoInputReader.h>
 #include <Switch.h>
 #include <ServoOutput.h>
-#include <ThrottleReader.h>
+#include <SpeedReader.h>
 #include <ThrottleOutput.h>
 
 #include <functional>
@@ -27,7 +27,7 @@ public:
                 AxisData<ServoOutput*> outputServos,
                 ThrottleOutput* throttleOutput,
                 ServoInputReader* servoInputs,
-                ThrottleReader* throttleInput,
+                SpeedReader* throttleInput,
                 Switch* pidSwitch);
 
     /**
@@ -45,7 +45,7 @@ private:
     AxisData<ServoOutput*> outputServos;
     ThrottleOutput* throttleOutput;
     ServoInputReader* servoInputs;
-    ThrottleReader* throttleInput;
+    SpeedReader* throttleInput;
     Switch* pidSwitch;
 
     TaskHandle_t pidLoopHandle;

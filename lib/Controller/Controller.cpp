@@ -14,7 +14,7 @@ Controller::Controller(OutputCalculator* outputCalculator,
                 AxisData<ServoOutput*> outputServos,
                 ThrottleOutput* throttleOutput,
                 ServoInputReader* servoInputs,
-                ThrottleReader* throttleInput,
+                SpeedReader* throttleInput,
                 Switch* pidSwitch) : Controller(outputCalculator, outputServos, servoInputs, pidSwitch) {
     this->throttleInput = throttleInput;
     this->throttleOutput = throttleOutput;
@@ -49,16 +49,15 @@ void Controller::controlWithThrottle() {
     this->outputCalculator->setCalculate(this->pidSwitch->getBoolean());
 
     RotationData servoInput = this->servoInputs->readInput();
-    int throttleSignal = this->throttleInput->getThrottle();
+    int throttleSignal = this->throttleInput->getSpeed();
     log_d("Input\t\tx:%5d, y:%5d, z:%5d, t:%5d", servoInput.x, servoInput.y, servoInput.z, throttleSignal);
 
     RotationData output = this->outputCalculator->calculateOutput(servoInput,
                                                                     this->servoInputs->getResolution(),
-                                                                    throttleSignal,
-                                                                    this->throttleInput->getResolution());
+                                                                    throttleSignal);
 
     this->writeOutputs(output);
-    this->throttleOutput->write(this->throttleInput->getRawThrottle());
+    this->throttleOutput->write(this->throttleInput->getRawSpeed());
 
     delay(20);
 }

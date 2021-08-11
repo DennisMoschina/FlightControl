@@ -1,13 +1,13 @@
 #include <ServoThrottleReader.h>
 
-ServoThrottleReader::ServoThrottleReader(ServoInputSignal* input, int resolution): ThrottleReader(resolution) {
+ServoThrottleReader::ServoThrottleReader(ServoInputSignal* input, int resolution): SpeedReader(resolution) {
     this->input = input;
 }
 
-int ServoThrottleReader::getThrottle() {
+int ServoThrottleReader::getSpeed() {
     return this->input->map(0, resolution);
 }
 
-int ServoThrottleReader::getRawThrottle() {
+int ServoThrottleReader::getRawSpeed() {
     return this->input->getPulse();
 }
