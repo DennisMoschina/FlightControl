@@ -2,7 +2,7 @@
 
 #define DEFAULT_P_GAIN 0.25
 #define DEFAULT_I_GAIN 0//.05
-#define DEFAULT_D_GAIN 0//.15
+#define DEFAULT_D_GAIN 0.03
 
 #define DEFAULT_FEED_FORWARD 0.138
 
@@ -15,7 +15,8 @@
 #define DEFAULT_I_GAIN_YAW 0//.03
 #define DEFAULT_I_GAIN_ROLL 0//.0075
 
-#define DEFAULT_D_GAIN_ROLL 0//.1
+#define DEFAULT_D_GAIN_YAW 0.1
+#define DEFAULT_D_GAIN_PITCH 0.07
 
 #define DEFAULT_ANTI_WINDUP 100
 
@@ -31,7 +32,8 @@ PID::PID() {
     this->setIGain(2, DEFAULT_I_GAIN_ROLL);
 
     this->setDGain(DEFAULT_D_GAIN);
-    this->setDGain(2, DEFAULT_D_GAIN_ROLL);
+    this->setDGain(0, DEFAULT_D_GAIN_YAW);
+    this->setDGain(1, DEFAULT_D_GAIN_PITCH);
 
     log_i("get P-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->getPGain().yaw, this->getPGain().pitch, this->getPGain().roll);
     log_i("get I-Gain:\tyaw:%7.2f, pitch:%7.2f, roll:%7.2f", this->getIGain().yaw, this->getIGain().pitch, this->getIGain().roll);
