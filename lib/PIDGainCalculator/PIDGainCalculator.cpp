@@ -1,9 +1,41 @@
 #include <PIDGainCalculator.h>
 
+#define DEFAULT_P_GAIN 0.25
+#define DEFAULT_I_GAIN 0//.05
+#define DEFAULT_D_GAIN 0.03
+
+
+#define DEFAULT_P_GAIN_YAW 0.17
+#define DEFAULT_P_GAIN_PITCH 0.25
+#define DEFAULT_P_GAIN_ROLL 0.06
+
+#define DEFAULT_I_GAIN_YAW 0//.03
+#define DEFAULT_I_GAIN_ROLL 0//.0075
+
+#define DEFAULT_D_GAIN_YAW 0.1
+#define DEFAULT_D_GAIN_PITCH 0.07
+
 
 PIDGainCalculator::PIDGainCalculator(PID* pid, int speedResolution) {
     this->pid = pid;
     this->speedResolution = speedResolution;
+
+    this->setPGain(DEFAULT_P_GAIN);
+    this->setPGain(CorrectionData::YAW, DEFAULT_P_GAIN_YAW);
+    this->setPGain(CorrectionData::PITCH, DEFAULT_P_GAIN_PITCH);
+    this->setPGain(CorrectionData::ROLL, DEFAULT_P_GAIN_ROLL);
+
+    this->setIGain(DEFAULT_I_GAIN);
+    this->setIGain(CorrectionData::YAW, DEFAULT_I_GAIN_YAW);
+    this->setIGain(CorrectionData::ROLL, DEFAULT_I_GAIN_ROLL);
+
+    this->setDGain(DEFAULT_D_GAIN);
+    this->setDGain(CorrectionData::YAW, DEFAULT_D_GAIN_YAW);
+    this->setDGain(CorrectionData::PITCH, DEFAULT_D_GAIN_PITCH);
+
+    this->setMinSpeedPGain(this->gainP * 2);
+    this->setMinSpeedIGain(this->gainI * 2);
+    this->setMinSpeedDGain(this->gainD * 2);
 }
 
 void PIDGainCalculator::calculateGains(int speed) {
@@ -47,12 +79,20 @@ void PIDGainCalculator::setDGain(byte axis, float gain) {
 void PIDGainCalculator::setPGain(CorrectionData pGain) {
     this->gainP = pGain;
 }
-
 void PIDGainCalculator::setIGain(CorrectionData iGain) {
     this->gainI = iGain;
 }
-
 void PIDGainCalculator::setDGain(CorrectionData dGain) {
+    this->gainD = dGain;
+}
+
+void PIDGainCalculator::setPGain(float pGain) {
+    this->gainP = pGain;
+}
+void PIDGainCalculator::setIGain(float iGain) {
+    this->gainI = iGain;
+}
+void PIDGainCalculator::setDGain(float dGain) {
     this->gainD = dGain;
 }
 
