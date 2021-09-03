@@ -21,15 +21,12 @@ public:
     Controller(OutputCalculator* outputCalculator,
                 AxisData<ServoOutput*> outputServos,
                 ServoInputReader* servoInputs,
-                Switch* pidSwitch);
+                Switch* pidSwitch,
+                ThrottleOutput* throttleOutput = nullptr,
+                SpeedReader* speedInput = nullptr,
+                int frequency = 50);
 
-    Controller(OutputCalculator* outputCalculator,
-                AxisData<ServoOutput*> outputServos,
-                ThrottleOutput* throttleOutput,
-                ServoInputReader* servoInputs,
-                SpeedReader* throttleInput,
-                Switch* pidSwitch);
-
+#if defined(ESP8266) || defined(ESP32)
     /**
      * @brief Create the task for the controller to process the inputs.
      */
@@ -39,24 +36,32 @@ public:
      * @brief Stop the task of the Controller putting out the data.
      */
     void stop();
+#endif
 
 private:
     OutputCalculator* outputCalculator;
     AxisData<ServoOutput*> outputServos;
     ThrottleOutput* throttleOutput;
     ServoInputReader* servoInputs;
-    SpeedReader* throttleInput;
+    SpeedReader* speedInput;
     Switch* pidSwitch;
+    int cycleDuration;
 
+    unsigned long oldTimestamp;
+
+#if defined(ESP8266) || defined(ESP32)
     TaskHandle_t pidLoopHandle;
 
     friend void controlTask(void * parameter);
     friend void controlTaskThrottle(void * parameter);
+#endif
 
     void control();
     void controlWithThrottle();
 
     void writeOutputs(RotationData output);
+
+    void matchFrequency();
 };
 
 #endif
