@@ -47,9 +47,9 @@ void assign() {
     rateOutputs.elevator = elevatorOutput;
     rateOutputs.aileron = aileOutput;
 
-    throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-    throttleInputReader = new ServoThrottleReader(throttleInput);
     throttleOutput = new ServoThrottleOutput(&throttleServo);
+    throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
+    throttleInputReader = new ServoThrottleReader(throttleInput, 1024, throttleOutput);
 
     pidSwitch = new PIDSwitch(gearInput);
 
@@ -62,7 +62,7 @@ void assign() {
 
     outputCalculator = new OutputCalculator(maxRates, filteredGyro, pid, gainCalculator);
 
-    controller = new Controller(outputCalculator, rateOutputs, throttleOutput, servoInputs, throttleInputReader, pidSwitch);    
+    controller = new Controller(outputCalculator, rateOutputs, servoInputs, pidSwitch, throttleOutput, throttleInputReader);    
 }
 
 void configure() {
