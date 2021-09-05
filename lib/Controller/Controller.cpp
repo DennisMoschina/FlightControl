@@ -56,7 +56,7 @@ void Controller::controlWithThrottle() {
                                                                     throttleSignal);
 
     this->writeOutputs(output);
-    
+
     this->matchFrequency();
 }
 
@@ -79,5 +79,6 @@ void Controller::matchFrequency() {
     unsigned long newTimestamp = millis();
     int delayTime = this->cycleDuration - (newTimestamp - oldTimestamp);
     this->oldTimestamp = newTimestamp;
+    log_v("delay for %d milliseconds", delayTime);
     delay(delayTime > 0 ? delayTime : 0);
 }
