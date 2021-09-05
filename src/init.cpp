@@ -27,7 +27,7 @@ PID* pid;
 Filter<int, 3>* filter;
 FilteredGyro* filteredGyro;
 OutputCalculator* outputCalculator;
-PIDSwitch* pidSwitch;
+ServoSignalSwitch* flightModeSwitch;
 Controller* controller;
 GainCalculator* gainCalculator;
 
@@ -51,7 +51,7 @@ void assign() {
     throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
     throttleInputReader = new ServoThrottleReader(throttleInput, 1024, throttleOutput);
 
-    pidSwitch = new PIDSwitch(gearInput);
+    flightModeSwitch = new ServoSignalSwitch(2, gearInput);
 
     mpu = new MPU6050();
     pid = new PID();
@@ -62,7 +62,7 @@ void assign() {
 
     outputCalculator = new OutputCalculator(maxRates, filteredGyro, pid, gainCalculator);
 
-    controller = new Controller(outputCalculator, rateOutputs, servoInputs, pidSwitch, throttleOutput, throttleInputReader);    
+    controller = new Controller(outputCalculator, rateOutputs, servoInputs, flightModeSwitch, throttleOutput, throttleInputReader);    
 }
 
 void configure() {

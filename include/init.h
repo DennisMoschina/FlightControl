@@ -10,7 +10,7 @@
 #include <OutputCalculator.h>
 #include <Controller.h>
 
-#include <Switch.h>
+#include <ServoSignalSwitch.h>
 
 #include <RotationRateOuput.h>
 #include <SingleServoOutput.h>
@@ -79,22 +79,7 @@ extern FilteredGyro* gyro;
 extern OutputCalculator* outputCalculator;
 extern GainCalculator* gainCalculator;
 
-
-class PIDSwitch : public Switch {
-public:
-    PIDSwitch(ServoInputSignal* switchServo) {
-        this->switchServo = switchServo;
-    }
-
-    boolean getBoolean() {
-        return this->switchServo->getBoolean();
-    }
-
-private:
-    ServoInputSignal* switchServo;
-};
-
-extern PIDSwitch* pidSwitch;
+extern ServoSignalSwitch* flightModeSwitch;
 
 extern Controller* controller;
 

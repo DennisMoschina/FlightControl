@@ -3,7 +3,12 @@
 
 class Switch {
 public:
-    virtual boolean getBoolean() = 0;
+    Switch(int positions);
+    virtual int getPosition() = 0;
+
+    int getNumberOfPositions();
+private:
+    const int positions;
 };
 
 #endif
