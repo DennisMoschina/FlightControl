@@ -12,8 +12,8 @@
  */
 class Menu {
 public:
-    Menu(Controller* controller);
-    Menu(Controller* controller, AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader);
+    Menu(FlightController* controller);
+    Menu(FlightController* controller, AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader);
 
     /**
      * @brief Start the controller.
@@ -43,7 +43,7 @@ public:
     void endTrimming();
 
 private:
-    Controller* controller;
+    FlightController* controller;
 
     TaskHandle_t trimHandle;
 

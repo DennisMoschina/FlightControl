@@ -1,10 +1,10 @@
 #include <Menu.h>
 
-Menu::Menu(Controller* controller) {
+Menu::Menu(FlightController* controller) {
     this->controller = controller;
 }
 
-Menu::Menu(Controller* controller, AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader) {
+Menu::Menu(FlightController* controller, AxisData<ServoOutput*> servoOutputs, ServoInputReader* inputReader) {
     this->controller = controller;
     this->servos = servoOutputs;
     this->inputs = inputReader;

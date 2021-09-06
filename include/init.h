@@ -8,7 +8,9 @@
 #include <ESP32Servo.h>
 
 #include <OutputCalculator.h>
-#include <Controller.h>
+#include <IdleOutputCalculator.h>
+#include <FlightController.h>
+#include <MultiModeFlightController.h>
 
 #include <ServoSignalSwitch.h>
 
@@ -44,6 +46,9 @@
 #define SERVO_MAX 2000
 
 
+#define FLIGHT_MODES 2
+
+
 extern int16_t MAX_YAW_RATE;
 extern int16_t MAX_PITCH_RATE;
 extern int16_t MAX_ROLL_RATE;
@@ -76,12 +81,12 @@ extern PID* pid;
 extern Filter<int, 3>* filter;
 extern FilteredGyro* gyro;
 
-extern OutputCalculator* outputCalculator;
+extern AbstractOutputCalculator* outputCalculators[FLIGHT_MODES];
 extern GainCalculator* gainCalculator;
 
 extern ServoSignalSwitch* flightModeSwitch;
 
-extern Controller* controller;
+extern FlightController* controller;
 
 /**
  * @brief Assign the values to the previously declared variables.

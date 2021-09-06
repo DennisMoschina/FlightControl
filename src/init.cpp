@@ -26,9 +26,9 @@ MPU6050* mpu;
 PID* pid;
 Filter<int, 3>* filter;
 FilteredGyro* filteredGyro;
-OutputCalculator* outputCalculator;
+AbstractOutputCalculator* outputCalculators[FLIGHT_MODES];
 ServoSignalSwitch* flightModeSwitch;
-Controller* controller;
+FlightController* controller;
 GainCalculator* gainCalculator;
 
 void assign() {
@@ -60,9 +60,10 @@ void assign() {
 
     gainCalculator = new PIDGainCalculator(pid);
 
-    outputCalculator = new OutputCalculator(maxRates, filteredGyro, pid, gainCalculator);
+    outputCalculators[0] = new OutputCalculator(servoInputs->getResolution(), aileOutput->getResoulution(), maxRates, filteredGyro, pid, gainCalculator);
+    outputCalculators[1] = new IdleOutputCalculator(servoInputs->getResolution(), aileOutput->getResoulution());
 
-    controller = new Controller(outputCalculator, rateOutputs, servoInputs, flightModeSwitch, throttleOutput, throttleInputReader);    
+    controller = new MultiModeFlightController<FLIGHT_MODES>(outputCalculators, rateOutputs, servoInputs, flightModeSwitch, throttleInputReader);    
 }
 
 void configure() {

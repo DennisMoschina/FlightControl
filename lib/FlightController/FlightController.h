@@ -1,28 +1,22 @@
-#ifndef _CONTROLLER_H
-#define _CONTROLLER_H
+#ifndef _FLIGHT_CONTROLLER_H
+#define _FLIGHT_CONTROLLER_H
 
-#include <OutputCalculator.h>
+#include <AbstractOutputCalculator.h>
 #include <ESP32Servo.h>
 #include <ServoInputReader.h>
 #include <Switch.h>
 #include <ServoOutput.h>
 #include <SpeedReader.h>
-#include <ThrottleOutput.h>
-
-#include <functional>
 
 /**
  * @brief Manage the calculation of the output based on the steering signals.
  * @author Dennis Moschina
  * @version 1.0
  */
-class Controller {
+class FlightController {
 public:
-    Controller(OutputCalculator* outputCalculator,
-                AxisData<ServoOutput*> outputServos,
+    FlightController(AxisData<ServoOutput*> outputServos,
                 ServoInputReader* servoInputs,
-                Switch* pidSwitch,
-                ThrottleOutput* throttleOutput = nullptr,
                 SpeedReader* speedInput = nullptr,
                 int frequency = 50);
 
@@ -33,18 +27,15 @@ public:
     void begin();
 
     /**
-     * @brief Stop the task of the Controller putting out the data.
+     * @brief Stop the task of the FlightController putting out the data.
      */
     void stop();
 #endif
 
-private:
-    OutputCalculator* outputCalculator;
+protected:
     AxisData<ServoOutput*> outputServos;
-    ThrottleOutput* throttleOutput;
     ServoInputReader* servoInputs;
     SpeedReader* speedInput;
-    Switch* pidSwitch;
     int cycleDuration;
 
     unsigned long oldTimestamp;
@@ -56,8 +47,8 @@ private:
     friend void controlTaskThrottle(void * parameter);
 #endif
 
-    void control();
-    void controlWithThrottle();
+    virtual void control() = 0;
+    virtual void controlWithThrottle() = 0;
 
     void writeOutputs(RotationData output);
 
