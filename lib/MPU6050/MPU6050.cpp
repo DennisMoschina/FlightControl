@@ -55,10 +55,13 @@ RawAxisData MPU6050::readAxisData(int registerPos) {
     log_v("requested data from register %d", registerPos);
     Wire.requestFrom(MPU_ADDR, AXIS_DATA_REGISTER_SIZE);
 
-    while (Wire.available() < AXIS_DATA_REGISTER_SIZE);
-    int available;
-    while ((available = Wire.available()) < AXIS_DATA_REGISTER_SIZE)
+    unsigned long startTime = millis();
+    int available = Wire.available();
+    while (available < AXIS_DATA_REGISTER_SIZE) {
+        if (startTime + this->timeout > millis()) throw "timeout when reading axisData";
         log_v("only %d bytes available, but %d expected", available, AXIS_DATA_REGISTER_SIZE);
+        available = Wire.available();
+    }
     data[this->axisMap.x] = Wire.read() << 8 | Wire.read();
     data[this->axisMap.y] = Wire.read() << 8 | Wire.read();
     data[this->axisMap.z] = Wire.read() << 8 | Wire.read();
@@ -125,6 +128,11 @@ void MPU6050::remapAxis(byte from, byte to) {
 void MPU6050::remapAxis(AxisData<byte> to) {
     this->axisMap = to;
 }
+
+void MPU6050::setTimeout(int timeout) {
+    this->timeout = timeout;
+}
+
 
 RawAxisData MPU6050::calculateAxisOffset(int registerPos, int numberOfReadings) {
     RAW_DATA_TYPE x[numberOfReadings];

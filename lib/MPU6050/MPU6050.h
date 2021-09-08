@@ -98,6 +98,12 @@ public:
      */
     void remapAxis(AxisData<byte> to);
 
+    /**
+     * @brief Set the timeout for reading data.
+     * @param timeout the timeout for reading data
+     */
+    void setTimeout(int timeout);
+
 private:
     RawAxisData gyroOffset;
     RawAxisData accelOffset;
@@ -109,6 +115,8 @@ private:
 
     int gyroRangeValues[4] = {250, 500, 1000, 2000};
     int accelRangeValues[4] = {2, 4, 8, 16};
+
+    int timeout = 1000;
 
     RawAxisData readAxisData(int registerPos);
     RawAxisData calculateAxisOffset(int registerPos, int numberOfReadings = 50);

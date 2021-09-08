@@ -54,6 +54,7 @@ void assign() {
     flightModeSwitch = new ServoSignalSwitch(2, gearInput);
 
     mpu = new MPU6050();
+    mpu->setTimeout(15);
     pid = new PID();
     filter = new EWMA<int, 3>(0.6);
     filteredGyro = new FilteredGyro(mpu, filter);
@@ -104,5 +105,9 @@ void startServos() {
 
 void startGyro() {
     log_v("Starting the gyro");
-    mpu->begin();
+    try {
+        mpu->begin();
+    } catch (const char* e) {
+        log_e("%s", e);
+    }
 }

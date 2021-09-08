@@ -16,7 +16,14 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
     RotationData setpoint = this->calculateSetpoint(servoInput);
 
     RotationData gyroReadings = rotationReader->getRotation();
-    RotationData output = stabilizer->loop(setpoint, gyroReadings);
+    RotationData output;
+    try {
+        output = stabilizer->loop(setpoint, gyroReadings);
+    } catch (const char* e) {
+        log_e("%s", e);
+        output = servoInput;
+        this->stabilizer->reset();
+    }
 
     log_d("Input\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
     log_d("Gyro\t\tx:%5d, y:%5d, z:%5d", gyroReadings.x, gyroReadings.y, gyroReadings.z);
