@@ -52,9 +52,13 @@ RawAxisData MPU6050::readAxisData(int registerPos) {
     Wire.beginTransmission(MPU_ADDR);
     Wire.write(registerPos);
     Wire.endTransmission();
+    log_v("requested data from register %d", registerPos);
     Wire.requestFrom(MPU_ADDR, AXIS_DATA_REGISTER_SIZE);
 
     while (Wire.available() < AXIS_DATA_REGISTER_SIZE);
+    int available;
+    while ((available = Wire.available()) < AXIS_DATA_REGISTER_SIZE)
+        log_v("only %d bytes available, but %d expected", available, AXIS_DATA_REGISTER_SIZE);
     data[this->axisMap.x] = Wire.read() << 8 | Wire.read();
     data[this->axisMap.y] = Wire.read() << 8 | Wire.read();
     data[this->axisMap.z] = Wire.read() << 8 | Wire.read();
