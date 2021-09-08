@@ -25,16 +25,16 @@
 class MPU6050 : public Gyro {
 public:
     typedef enum {
-        MPU6050_ACC_RANGE_2G,  // +/- 2g (default)
-        MPU6050_ACC_RANGE_4G,  // +/- 4g
-        MPU6050_ACC_RANGE_8G,  // +/- 8g
-        MPU6050_ACC_RANGE_16G // +/- 16g
+        MPU6050_ACC_RANGE_2G,  /// +/- 2g (default)
+        MPU6050_ACC_RANGE_4G,  /// +/- 4g
+        MPU6050_ACC_RANGE_8G,  /// +/- 8g
+        MPU6050_ACC_RANGE_16G  /// +/- 16g
     } mpu6050_acc_range;
     typedef enum {
-        MPU6050_GYR_RANGE_250,  // +/- 250 deg/s (default)
-        MPU6050_GYR_RANGE_500,  // +/- 500 deg/s
-        MPU6050_GYR_RANGE_1000, // +/- 1000 deg/s
-        MPU6050_GYR_RANGE_2000  // +/- 2000 deg/s
+        MPU6050_GYR_RANGE_250,  /// +/- 250 deg/s (default)
+        MPU6050_GYR_RANGE_500,  /// +/- 500 deg/s
+        MPU6050_GYR_RANGE_1000, /// +/- 1000 deg/s
+        MPU6050_GYR_RANGE_2000  /// +/- 2000 deg/s
     } mpu6050_gyr_range;
 
     MPU6050(byte sda = 21, byte scl = 22);
