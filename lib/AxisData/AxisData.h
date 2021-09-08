@@ -5,7 +5,10 @@
 #define ROTATION_DATA_TYPE int
 
 #include <Arduino.h>
+
+#if defined(ESP8266) || defined(ESP32)
 #include <stdexcept>
+#endif
 
 /**
  * @brief An ordered triple of some type.
@@ -37,8 +40,10 @@ template<typename T> struct AxisData {
     };
 
 
-    T& operator[](std::size_t idx) {
+    T& operator[](unsigned int idx) {
+        #if defined(ESP8266) || defined(ESP32)
         assert(idx >= 0 && idx < 3);
+        #endif
         switch (idx) {
             case 0:
                 return this->x;
@@ -47,11 +52,15 @@ template<typename T> struct AxisData {
             case 2:
                 return this->z;
         }
+        #if defined(ESP8266) || defined(ESP32)
         throw std::invalid_argument("Invalid axis!");
+        #endif
     }
 
-    const T& operator[](std::size_t idx) const {
+    const T& operator[](unsigned int idx) const {
+        #if defined(ESP8266) || defined(ESP32)
         assert(idx >= 0 && idx < 3);
+        #endif
         switch (idx) {
             case 0:
                 return this->*x;
@@ -60,7 +69,9 @@ template<typename T> struct AxisData {
             case 2:
                 return this->*z;
         }
+        #if defined(ESP8266) || defined(ESP32)
         throw std::invalid_argument("Invalid axis!");
+        #endif
     }
 
     inline AxisData<T>& operator=(const T& coords) {
@@ -72,8 +83,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator+=(const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x += rhs.x;
         this->y += rhs.y;
         this->z += rhs.z;
@@ -82,8 +95,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator+=(const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x += k;
         this->y += k;
         this->z += k;
@@ -92,8 +107,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator-=(const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x -= rhs.x;
         this->y -= rhs.y;
         this->z -= rhs.z;
@@ -102,8 +119,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator-=(const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x -= k;
         this->y -= k;
         this->z -= k;
@@ -112,8 +131,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator*=(const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x *= rhs.x;
         this->y *= rhs.y;
         this->z *= rhs.z;
@@ -122,8 +143,10 @@ template<typename T> struct AxisData {
 
     template<typename U>
     inline AxisData<T>& operator*=(const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         this->x *= k;
         this->y *= k;
         this->z *= k;
@@ -133,40 +156,52 @@ template<typename T> struct AxisData {
 
     template<typename U>
     friend AxisData<T> operator+(AxisData<T> lhs, const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs += rhs;
     }
     template<typename U>
     friend AxisData<T> operator+(AxisData<T> lhs, const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs += k;
     }
 
     template<typename U>
     friend AxisData<T> operator-(AxisData<T> lhs, const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs -= rhs;
     }
     template<typename U>
     friend AxisData<T> operator-(AxisData<T> lhs, const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs -= k;
     }
 
     template<typename U>
     friend AxisData<T> operator*(AxisData<T> lhs, const AxisData<U>& rhs) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs *= rhs;
     }
     template<typename U>
     friend AxisData<T> operator*(AxisData<T> lhs, const U& k) {
+        #if defined(ESP8266) || defined(ESP32)
         static_assert(std::is_arithmetic<T>::value, "T must be numeric");
         static_assert(std::is_arithmetic<U>::value, "U must be numeric");
+        #endif
         return lhs *= k;
     }
 };
