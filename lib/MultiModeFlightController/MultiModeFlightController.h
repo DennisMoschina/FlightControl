@@ -59,6 +59,7 @@ void MultiModeFlightController<FLIGHT_MODES>::control() {
 template<int FLIGHT_MODES>
 void MultiModeFlightController<FLIGHT_MODES>::controlWithThrottle() {
     RotationData servoInput = this->servoInputs->readInput();
+    log_v("read steering inputs");
     int throttleSignal = this->speedInput->getSpeed();
     log_d("Input\t\tx:%5d, y:%5d, z:%5d, t:%5d", servoInput.x, servoInput.y, servoInput.z, throttleSignal);
 

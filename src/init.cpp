@@ -94,13 +94,23 @@ void startServos() {
 	ESP32PWM::allocateTimer(1);
 	ESP32PWM::allocateTimer(2);
 	ESP32PWM::allocateTimer(3);
+    log_v("allocated timers");
+
 	rudderServo.setPeriodHertz(50);
     rudderServo.attach(RUDDER_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    log_v("attached rudderServo to pin %d", RUDDER_OUTPUT_PIN);
+
     aileServo.setPeriodHertz(50);
     aileServo.attach(AILE_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    log_v("attached aileServo to pin %d", AILE_OUTPUT_PIN);
+
     elevatorServo.setPeriodHertz(50);
     elevatorServo.attach(ELEVATOR_OUTPUT_PIN, SERVO_MIN, SERVO_MAX);
+    log_v("attached elevatorServo to pin %d", ELEVATOR_OUTPUT_PIN);
+
+    throttleServo.setPeriodHertz(50);
     throttleServo.attach(THROTTLE_OUTPUT_PIN);
+    log_v("attached throttleServo to pin %d", THROTTLE_OUTPUT_PIN);
 }
 
 void startGyro() {

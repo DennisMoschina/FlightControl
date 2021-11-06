@@ -25,7 +25,9 @@ void controlTaskThrottle(void * parameter) {
 
 void FlightController::begin() {
     TaskFunction_t control = this->speedInput == nullptr ? controlTask : controlTaskThrottle;
+    log_v("decided on function for task for flight controller");
     xTaskCreatePinnedToCore(control, "controlTask", 10000, this, 0, &this->pidLoopHandle, 0);
+    log_v("created task for flightcontroller");
 }
 
 void FlightController::stop() {
