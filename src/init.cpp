@@ -63,7 +63,6 @@ void assign() {
 
     gainCalculator = new PIDGainCalculator(pid);
 
-    // outputCalculators[0] = new OutputCalculator(servoInputs->getResolution(), aileOutput->getResolution(), maxRates, filteredGyro, pid, gainCalculator);
     outputCalculators[0] = new SpeedBasedOutputCalculator(new OutputCalculator(servoInputs->getResolution(),
                                                                                aileOutput->getResolution(),
                                                                                maxRates,

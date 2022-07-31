@@ -1,0 +1,40 @@
+@startuml Components
+skinparam linetype ortho
+
+component FlightController {
+    port p1
+
+    component MultiModeFlightController
+    interface control as controlMulti
+
+    MultiModeFlightController - controlMulti
+    controlMulti <- p1
+
+    component Switch
+    Switch -0)- MultiModeFlightController
+}
+p1 - control
+
+component OutputCalculator
+OutputCalculator -0)- FlightController
+
+component SteeringInputReader
+SteeringInputReader -0)- FlightController
+
+component SpeedReader
+SpeedReader -0)- OutputCalculator
+
+component Stabilizer
+Stabilizer -0)- OutputCalculator
+
+component RotationRateOutput
+RotationRateOutput -0)- FlightController
+
+component Gyro
+Gyro -0)- Stabilizer
+
+component GainCalculator
+GainCalculator -0)- OutputCalculator
+GainCalculator -(0- Stabilizer
+
+@enduml
