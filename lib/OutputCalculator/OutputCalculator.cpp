@@ -4,12 +4,10 @@ OutputCalculator::OutputCalculator(int steeringInputResolution,
                         int outputResolution,
                         RotationData maxRates,
                         Gyro* rotationReader,
-                        Stabilizer* stabilizer,
-                        GainCalculator* gainCalculator): AbstractOutputCalculator(steeringInputResolution, outputResolution) {
+                        Stabilizer* stabilizer): AbstractOutputCalculator(steeringInputResolution, outputResolution) {
     this->maxRates = maxRates;
     this->rotationReader = rotationReader;
     this->stabilizer = stabilizer;
-    this->gainCalculator = gainCalculator;
 }
 
 RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
@@ -24,22 +22,6 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
         output = servoInput;
         this->stabilizer->reset();
     }
-
-    log_d("Input\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
-    log_d("Gyro\t\tx:%5d, y:%5d, z:%5d", gyroReadings.x, gyroReadings.y, gyroReadings.z);
-    log_d("Setpoint\tx:%5d, y:%5d, z:%5d", setpoint.x, setpoint.y, setpoint.z);
-    log_d("Output\t\tx:%5d, y:%5d, z:%5d\n", output.x, output.y, output.z);
-
-    return this->adjustOutput(output, this->stabilizer->getResolution());
-}
-
-RotationData OutputCalculator::calculateOutput(RotationData servoInput,
-                                int speed) {
-    RotationData setpoint = this->calculateSetpoint(servoInput);
-
-    RotationData gyroReadings = rotationReader->getRotation();
-    this->gainCalculator->calculateGains(speed);
-    RotationData output = stabilizer->loop(setpoint, gyroReadings);
 
     log_d("Input\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
     log_d("Gyro\t\tx:%5d, y:%5d, z:%5d", gyroReadings.x, gyroReadings.y, gyroReadings.z);

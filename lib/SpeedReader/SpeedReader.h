@@ -1,6 +1,9 @@
 #ifndef _SPEED_READER_H
 #define _SPEED_READER_H
 
+/**
+ * @brief This interface is used to get the speed of an object.
+ */
 class SpeedReader {
 public:
     SpeedReader(int resolution = 1024) {

@@ -22,14 +22,6 @@ public:
     virtual RotationData calculateOutput(RotationData servoInput) = 0;
 
     /**
-     * @brief Calculate the output to match the steering signals.
-     * @param servoInput the steering signal in percent of the maximum rates
-     * @param speed the signal for the throttle
-     * @return the signal to output in percent to match the steering signal
-     */
-    virtual RotationData calculateOutput(RotationData servoInput, int speed) = 0;
-
-    /**
      * @brief Reset any settings or other stuff inside the outputcalculator which might
      * change by using it.
      */
@@ -43,6 +35,8 @@ public:
     }
 
 protected:
+    AbstractOutputCalculator(): steeringInputResolution(-1), outputResolution(-1) {}
+
     RotationData adjustOutput(RotationData output, int fromResolution) {
         RotationData adjustedOutput;
         for (int i = 0; i < 3; i++)

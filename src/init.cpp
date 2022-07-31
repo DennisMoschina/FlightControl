@@ -1,5 +1,7 @@
 #include <init.h>
 
+#include <SpeedBasedOutputCalculator.h>
+
 int16_t MAX_YAW_RATE = 360;
 int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
@@ -21,7 +23,7 @@ Servo elevatorServo;
 ServoOutput* rudderOutput;
 ServoOutput* aileOutput;
 ServoOutput* elevatorOutput;
-AxisData<ServoOutput*> rateOutputs;
+AxisData<RotationRateOutput*> rateOutputs;
 MPU6050* mpu;
 PID* pid;
 Filter<int, 3>* filter;
@@ -61,8 +63,15 @@ void assign() {
 
     gainCalculator = new PIDGainCalculator(pid);
 
-    outputCalculators[0] = new OutputCalculator(servoInputs->getResolution(), aileOutput->getResoulution(), maxRates, filteredGyro, pid, gainCalculator);
-    outputCalculators[1] = new IdleOutputCalculator(servoInputs->getResolution(), aileOutput->getResoulution());
+    // outputCalculators[0] = new OutputCalculator(servoInputs->getResolution(), aileOutput->getResolution(), maxRates, filteredGyro, pid, gainCalculator);
+    outputCalculators[0] = new SpeedBasedOutputCalculator(new OutputCalculator(servoInputs->getResolution(),
+                                                                               aileOutput->getResolution(),
+                                                                               maxRates,
+                                                                               filteredGyro,
+                                                                               pid),
+                                                          throttleInputReader,
+                                                          gainCalculator);
+    outputCalculators[1] = new IdleOutputCalculator(servoInputs->getResolution(), aileOutput->getResolution());
 
     controller = new MultiModeFlightController<FLIGHT_MODES>(outputCalculators, rateOutputs, servoInputs, flightModeSwitch, throttleInputReader);    
 }

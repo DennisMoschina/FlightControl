@@ -14,7 +14,7 @@
 
 #include <ServoSignalSwitch.h>
 
-#include <RotationRateOuput.h>
+#include <RotationRateOutput.h>
 #include <SingleServoOutput.h>
 #include <ServoOutput.h>
 
@@ -26,6 +26,8 @@
 
 #include <GainCalculator.h>
 #include <PIDGainCalculator.h>
+
+#include <ServoInputReader.h>
 
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2
@@ -74,7 +76,7 @@ extern Servo elevatorServo;
 extern ServoOutput* rudderOutput;
 extern ServoOutput* aileOutput;
 extern ServoOutput* elevatorOutput;
-extern AxisData<ServoOutput*> rateOutputs;
+extern AxisData<RotationRateOutput*> rateOutputs;
 
 extern MPU6050* mpu;
 extern PID* pid;

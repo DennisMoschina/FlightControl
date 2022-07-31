@@ -6,3 +6,6 @@ include/WiFiResources.h
 .DS_Store
 .vscode/
 lib/OTA/NetworkCredentials.h
+.idea/modules.xml
+.idea/FlightControl.iml
+.idea/vcs.xml

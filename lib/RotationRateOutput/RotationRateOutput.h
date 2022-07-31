@@ -26,7 +26,7 @@ public:
      * @brief Get the resolution for the rate.
      * @return the resolution for the rate
      */
-    int getResoulution() {
+    int getResolution() {
         return this->resolution;
     }
 

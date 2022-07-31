@@ -1,11 +1,11 @@
 #include <FlightController.h>
 
-FlightController::FlightController(AxisData<ServoOutput*> outputServos,
-                ServoInputReader* servoInputs,
+FlightController::FlightController(AxisData<RotationRateOutput*> rotationOutputs,
+                SteeringInputReader* steeringInputs,
                 SpeedReader* speedInput,
                 int frequency) {
-    this->outputServos = outputServos;
-    this->servoInputs = servoInputs;
+    this->rotationOutputs = rotationOutputs;
+    this->steeringInputs = steeringInputs;
     this->speedInput = speedInput;
     this->cycleDuration = 1000 / frequency; 
 }
@@ -17,16 +17,8 @@ void controlTask(void * parameter) {
     }
 }
 
-void controlTaskThrottle(void * parameter) {
-    for (;;) {
-        ((FlightController*) parameter)->controlWithThrottle();
-    }
-}
-
 void FlightController::begin() {
-    TaskFunction_t control = this->speedInput == nullptr ? controlTask : controlTaskThrottle;
-    log_v("decided on function for task for flight controller");
-    xTaskCreatePinnedToCore(control, "controlTask", 10000, this, 0, &this->pidLoopHandle, 0);
+    xTaskCreatePinnedToCore(controlTask, "controlTask", 10000, this, 0, &this->pidLoopHandle, 0);
     log_v("created task for flightcontroller");
 }
 
@@ -35,8 +27,19 @@ void FlightController::stop() {
 }
 #endif
 
+void FlightController::control() {
+    RotationData servoInput = this->steeringInputs->readInput();
+    log_d("Input\t\t\tx:%5d, y:%5d, z:%5d", servoInput.x, servoInput.y, servoInput.z);
+
+    RotationData output = this->calculateOutputs(servoInput);
+
+    this->writeOutputs(output);
+
+    this->matchFrequency();
+}
+
 void FlightController::writeOutputs(RotationData output) {
-    for (int i = 0; i < 3; i++) this->outputServos[i]->write(output[i]);
+    for (int i = 0; i < 3; i++) this->rotationOutputs[i]->write(output[i]);
 }
 
 void FlightController::matchFrequency() {

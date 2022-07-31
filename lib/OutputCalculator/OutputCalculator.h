@@ -18,8 +18,7 @@ public:
                         int outputResolution,
                         RotationData maxRates,
                         Gyro* rotationReader,
-                        Stabilizer* stabilizer,
-                        GainCalculator* gainCalculator = nullptr);
+                        Stabilizer* stabilizer);
 
     /**
      * Calculate the output to match the steering signals.
@@ -28,21 +27,11 @@ public:
      */
     RotationData calculateOutput(RotationData servoInput);
 
-    /**
-     * Calculate the output to match the steering signals.
-     * @param servoInput the steering signal in percent of the maximum rates
-     * @param speed the signal for the throttle
-     * @return the signal to output in percent to match the steering signal
-     */
-    RotationData calculateOutput(RotationData servoInput,
-                                int speed);
-
     void reset();
 
 private:
     Stabilizer* stabilizer;
     Gyro* rotationReader;
-    GainCalculator* gainCalculator;
 
     RotationData maxRates;
 

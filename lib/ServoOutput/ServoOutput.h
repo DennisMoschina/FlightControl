@@ -1,7 +1,7 @@
 #ifndef _SERVO_OUTPUT_H
 #define _SERVO_OUTPUT_H
 
-#include <RotationRateOuput.h>
+#include <RotationRateOutput.h>
 
 /**
  * @brief A {@link RotationRateOutput} in form of a servo.

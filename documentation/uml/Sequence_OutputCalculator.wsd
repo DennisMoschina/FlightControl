@@ -1,0 +1,20 @@
+@startuml OutputCalculator
+autoactivate on
+
+FlightController -> OutputCalculator : calculateOutput(steeringInput)
+OutputCalculator -> OutputCalculator : calculateSetpoint(steeringInput)
+return setpoint
+
+OutputCalculator -> Gyro : getRotation()
+return gyroReadings
+
+OutputCalculator -> Stabilizer : loop(setpoint, gyroReadings)
+return output
+
+OutputCalculator -> Stabilizer : getResolution()
+return stabilizerResolution
+OutputCalculator -> OutputCalculator : adjustOutput(output, stabilizerResolution)
+return adjustedOutput
+return output
+
+@enduml

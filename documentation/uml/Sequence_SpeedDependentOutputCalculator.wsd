@@ -1,0 +1,15 @@
+@startuml SpeedDependent_OutputCalculator
+autoactivate on
+
+FlightController -> SpeedDependentOutputCalculator : calculateOutput(steeringInput)
+SpeedDependentOutputCalculator -> SpeedReader : getSpeed()
+return speed
+
+SpeedDependentOutputCalculator -> GainCalculator : calculateGains(speed)
+return
+
+SpeedDependentOutputCalculator -> OutputCalculator : calculateOutput(steeringInput)
+return output
+return output
+
+@enduml

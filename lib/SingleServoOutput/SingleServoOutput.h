@@ -1,7 +1,7 @@
 #ifndef _SINGLE_SERVO_OUTPUT_H
 #define _SINGLE_SERVO_OUTPUT_H
 
-#include <RotationRateOuput.h>
+#include <RotationRateOutput.h>
 #include <ESP32Servo.h>
 #include <ServoOutput.h>
 

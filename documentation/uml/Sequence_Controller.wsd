@@ -1,0 +1,32 @@
+@startuml FlightController_Sequence
+autoactivate on
+
+main -> FlightController: begin()
+
+create controlTask
+FlightController -->> controlTask: <<create>>
+
+controlTask -> FlightController : control
+
+FlightController -> SteeringInputReader : readInput()
+return steeringInputs
+
+FlightController -> FlightController : calculateOutputs(steeringInputs)
+return output
+
+FlightController -> FlightController : writeOutputs(output)
+FlightController -> RotationOutput : write(output[i])
+return
+deactivate
+
+FlightController -> FlightController : matchFrequency()
+deactivate
+
+return
+
+== optional ==
+
+main -> FlightController : stop()
+FlightController -> controlTask !! : vTaskDelete(pidLoopHandle)
+
+@enduml

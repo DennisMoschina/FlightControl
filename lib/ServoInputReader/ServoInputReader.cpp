@@ -19,12 +19,4 @@ RotationData ServoInputReader::readInput() {
     return inputs;
 }
 
-void ServoInputReader::setInvert(byte axis, boolean invert) {
-    this->inverts[axis] = invert;
-}
-
-void ServoInputReader::setInvert(AxisData<boolean> invert) {
-    this->inverts = invert;
-}
-
 void ServoInputReader::calibrate() {}

@@ -1,20 +1,17 @@
 #ifndef _SERVO_THROTTLE_READER_H
 #define _SERVO_THROTTLE_READER_H
 
-#include <SpeedReader.h>
+#include <ThrottleReader.h>
 #include <ServoInput.h>
 #include <ThrottleOutput.h>
 
-class ServoThrottleReader: public SpeedReader {
+class ServoThrottleReader: public ThrottleReader {
 public:
     ServoThrottleReader(ServoInputSignal* input, int throttleResolution = 1024, ThrottleOutput* throttleOutput = nullptr);
-
-    int getSpeed();
-    int getRawSpeed();
-
 private:
     ServoInputSignal* input;
-    ThrottleOutput* throttleOutput;
+
+    int getRawSpeed();
 };
 
 #endif
