@@ -10,7 +10,7 @@
 #include <StabilizedOutputCalculator/StabilizedOutputCalculator.h>
 #include <IdleOutputCalculator/IdleOutputCalculator.h>
 #include <FlightController.h>
-#include <MultiModeFlightController.h>
+#include <MultiModeFlightController/MultiModeFlightController.h>
 
 #include <ServoSignalSwitch/ServoSignalSwitch.h>
 
@@ -28,8 +28,8 @@
 #include <PIDGainCalculator/PIDGainCalculator.h>
 #include <SpeedBasedOutputCalculator/SpeedBasedOutputCalculator.h>
 
-
 #include <ServoInputReader/ServoInputReader.h>
+#include <ThrottleManagingFlightController/ThrottleManagingFlightController.h>
 
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2
@@ -60,7 +60,8 @@ extern int16_t MAX_ROLL_RATE;
 extern RotationData maxRates;
 
 extern ServoInputSignal* throttleInput;
-extern SpeedReader* throttleInputReader;
+extern SpeedReader* speedReader;
+extern ThrottleReader* throttleReader;
 
 extern Servo throttleServo;
 extern ThrottleOutput* throttleOutput;

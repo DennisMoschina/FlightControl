@@ -17,7 +17,6 @@ public:
                 AxisData<RotationRateOutput*> rotationOutputs,
                 SteeringInputReader* steeringInputs,
                 Switch* modeSwitch,
-                SpeedReader* speedInput = nullptr,
                 int frequency = 50);
 
 protected:
@@ -35,11 +34,9 @@ MultiModeFlightController<FLIGHT_MODES>::MultiModeFlightController(AbstractOutpu
                                                                     AxisData<RotationRateOutput*> rotationOutputs,
                                                                     SteeringInputReader* steeringInputs,
                                                                     Switch* modeSwitch,
-                                                                    SpeedReader* speedInput,
                                                                     int frequency):
                                                                     FlightController(rotationOutputs,
                                                                                     steeringInputs,
-                                                                                    speedInput,
                                                                                     frequency) {
     for (int i = 0; i < FLIGHT_MODES; i++) this->outputCalculators[i] = outputCalculators[i];
     this->modeSwitch = modeSwitch;

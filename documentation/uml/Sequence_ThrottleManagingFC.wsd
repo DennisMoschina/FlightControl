@@ -1,0 +1,26 @@
+@startuml ThrottleManagingFlightController_Sequence
+autoactivate on
+
+main -> ThrottleManagingFlightController: begin()
+
+create controlTask
+ThrottleManagingFlightController -->> controlTask: <<create>>
+
+controlTask -> ThrottleManagingFlightController : control
+ThrottleManagingFlightController -> ThrottleReader : getSpeed()
+
+ThrottleReader -> ThrottleReader : getRawSpeed()
+return rawSpeed
+ThrottleReader -> ThrottleOutput : write(rawSpeed)
+return
+return
+
+ThrottleManagingFlightController -> FlightController : control()
+return
+
+== optional ==
+
+main -> ThrottleManagingFlightController : stop()
+ThrottleManagingFlightController -> controlTask !! : vTaskDelete(pidLoopHandle)
+
+@enduml

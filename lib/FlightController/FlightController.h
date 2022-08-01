@@ -14,7 +14,6 @@ class FlightController {
 public:
     FlightController(AxisData<RotationRateOutput*> rotationOutputs,
                 SteeringInputReader* steeringInputs,
-                SpeedReader* speedInput = nullptr,
                 int frequency = 50);
 
 #if defined(ESP8266) || defined(ESP32)
@@ -37,7 +36,6 @@ public:
 protected:
     AxisData<RotationRateOutput*> rotationOutputs;
     SteeringInputReader* steeringInputs;
-    SpeedReader* speedInput;
     int cycleDuration;
 
     unsigned long oldTimestamp;

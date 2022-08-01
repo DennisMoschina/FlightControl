@@ -7,7 +7,7 @@
 #include <ThrottleOutput.h>
 
 /**
- * @brief This class reads the throttle signal as a speed signal.
+ * @brief This class reads the throttle signal as a speed signal and writes it to an {@link ThrottleOutput}.
  */
 class ThrottleReader: public SpeedReader {
 public:

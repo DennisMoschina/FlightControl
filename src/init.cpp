@@ -7,7 +7,7 @@ int16_t MAX_ROLL_RATE = 720;
 RotationData maxRates { MAX_YAW_RATE, MAX_PITCH_RATE, MAX_ROLL_RATE };
 
 ServoInputSignal* throttleInput;
-SpeedReader* throttleInputReader;
+SpeedReader* speedReader;
 Servo throttleServo;
 ThrottleOutput* throttleOutput;
 ServoInputSignal* gearInput;
@@ -30,6 +30,7 @@ AbstractOutputCalculator* outputCalculators[FLIGHT_MODES];
 ServoSignalSwitch* flightModeSwitch;
 FlightController* controller;
 GainCalculator* gainCalculator;
+ThrottleReader* throttleReader;
 
 void assign() {
     rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
@@ -49,7 +50,8 @@ void assign() {
 
     throttleOutput = new ServoThrottleOutput(&throttleServo);
     throttleInput = new ServoInputPin<THROTTLE_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
-    throttleInputReader = new ServoThrottleReader(throttleInput, 1024, throttleOutput);
+    throttleReader = new ServoThrottleReader(throttleInput, 1024, throttleOutput);
+    speedReader = throttleReader;
 
     flightModeSwitch = new ServoSignalSwitch(2, gearInput);
 
@@ -66,11 +68,15 @@ void assign() {
                                                                                maxRates,
                                                                                filteredGyro,
                                                                                pid),
-                                                          throttleInputReader,
+                                                          speedReader,
                                                           gainCalculator);
     outputCalculators[1] = new IdleOutputCalculator(servoInputs->getResolution(), aileOutput->getResolution());
 
-    controller = new MultiModeFlightController<FLIGHT_MODES>(outputCalculators, rateOutputs, servoInputs, flightModeSwitch, throttleInputReader);    
+    controller = new ThrottleManagingFlightController(throttleReader,
+                                                      new MultiModeFlightController<FLIGHT_MODES>(outputCalculators,
+                                                                                                  rateOutputs,
+                                                                                                  servoInputs,
+                                                                                                  flightModeSwitch));
 }
 
 void configure() {

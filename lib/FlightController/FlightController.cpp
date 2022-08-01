@@ -2,11 +2,9 @@
 
 FlightController::FlightController(AxisData<RotationRateOutput*> rotationOutputs,
                 SteeringInputReader* steeringInputs,
-                SpeedReader* speedInput,
                 int frequency) {
     this->rotationOutputs = rotationOutputs;
     this->steeringInputs = steeringInputs;
-    this->speedInput = speedInput;
     this->cycleDuration = 1000 / frequency; 
 }
 
