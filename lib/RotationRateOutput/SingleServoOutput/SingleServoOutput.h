@@ -3,7 +3,7 @@
 
 #include <RotationRateOutput.h>
 #include <ESP32Servo.h>
-#include <ServoOutput.h>
+#include <ServoOutput/ServoOutput.h>
 
 class SingleServoOutput: public ServoOutput {
 public:

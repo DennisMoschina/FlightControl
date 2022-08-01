@@ -1,4 +1,4 @@
-#include <ServoSignalSwitch.h>
+#include "ServoSignalSwitch.h"
 
 ServoSignalSwitch::ServoSignalSwitch(int positions, ServoInputSignal* servoInput): Switch(positions) {
     this->servoInput = servoInput;

@@ -1,4 +1,4 @@
-#include <IdleOutputCalculator.h>
+#include "IdleOutputCalculator.h"
 
 IdleOutputCalculator::IdleOutputCalculator(int steeringInputResolution, int outputResolution):
     AbstractOutputCalculator(steeringInputResolution, outputResolution) {}

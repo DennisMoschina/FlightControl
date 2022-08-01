@@ -1,4 +1,4 @@
-#include <ServoInputReader.h>
+#include "ServoInputReader.h"
 
 ServoInputReader::ServoInputReader(AxisData<ServoInputSignal*> servoInputs) {
     this->servoInputs = servoInputs;

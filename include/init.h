@@ -2,32 +2,34 @@
 #define _INIT_H
 
 #include <ServoInput.h>
-#include <MPU6050.h>
-#include <PID.h>
+#include <MPU6050/MPU6050.h>
+#include <PID/PID.h>
 
 #include <ESP32Servo.h>
 
-#include <OutputCalculator.h>
-#include <IdleOutputCalculator.h>
+#include <StabilizedOutputCalculator/StabilizedOutputCalculator.h>
+#include <IdleOutputCalculator/IdleOutputCalculator.h>
 #include <FlightController.h>
 #include <MultiModeFlightController.h>
 
-#include <ServoSignalSwitch.h>
+#include <ServoSignalSwitch/ServoSignalSwitch.h>
 
 #include <RotationRateOutput.h>
-#include <SingleServoOutput.h>
-#include <ServoOutput.h>
+#include <SingleServoOutput/SingleServoOutput.h>
+#include <ServoOutput/ServoOutput.h>
 
-#include <ServoThrottleReader.h>
-#include <ServoThrottleOutput.h>
+#include <ServoThrottleReader/ServoThrottleReader.h>
+#include <ServoThrottleOutput/ServoThrottleOutput.h>
 
-#include <EWMA.h>
-#include <FilteredGyro.h>
+#include <EWMA/EWMA.h>
+#include <FilteredGyro/FilteredGyro.h>
 
 #include <GainCalculator.h>
-#include <PIDGainCalculator.h>
+#include <PIDGainCalculator/PIDGainCalculator.h>
+#include <SpeedBasedOutputCalculator/SpeedBasedOutputCalculator.h>
 
-#include <ServoInputReader.h>
+
+#include <ServoInputReader/ServoInputReader.h>
 
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2

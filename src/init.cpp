@@ -1,7 +1,5 @@
 #include <init.h>
 
-#include <SpeedBasedOutputCalculator.h>
-
 int16_t MAX_YAW_RATE = 360;
 int16_t MAX_PITCH_RATE = 360;
 int16_t MAX_ROLL_RATE = 720;
@@ -63,7 +61,7 @@ void assign() {
 
     gainCalculator = new PIDGainCalculator(pid);
 
-    outputCalculators[0] = new SpeedBasedOutputCalculator(new OutputCalculator(servoInputs->getResolution(),
+    outputCalculators[0] = new SpeedBasedOutputCalculator(new StabilizedOutputCalculator(servoInputs->getResolution(),
                                                                                aileOutput->getResolution(),
                                                                                maxRates,
                                                                                filteredGyro,

@@ -1,4 +1,4 @@
-#include <ServoThrottleReader.h>
+#include "ServoThrottleReader.h"
 
 ServoThrottleReader::ServoThrottleReader(ServoInputSignal* input, int resolution, ThrottleOutput* throttleOutput): ThrottleReader(resolution, throttleOutput) {
     this->input = input;

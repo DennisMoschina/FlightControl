@@ -12,9 +12,9 @@
  * @author Dennis Moschina
  * @version 1.0
  */
-class OutputCalculator: public AbstractOutputCalculator {
+class StabilizedOutputCalculator: public AbstractOutputCalculator {
 public:
-    OutputCalculator(int steeringInputResolution,
+    StabilizedOutputCalculator(int steeringInputResolution,
                         int outputResolution,
                         RotationData maxRates,
                         Gyro* rotationReader,

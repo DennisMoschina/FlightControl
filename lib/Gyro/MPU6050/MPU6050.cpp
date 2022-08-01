@@ -1,4 +1,4 @@
-#include <MPU6050.h>
+#include "MPU6050.h"
 
 MPU6050::MPU6050(byte sda, byte scl) {
     Wire.begin(sda, scl);

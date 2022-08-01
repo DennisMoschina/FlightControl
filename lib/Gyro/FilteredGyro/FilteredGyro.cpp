@@ -1,4 +1,4 @@
-#include <FilteredGyro.h>
+#include "FilteredGyro.h"
 
 FilteredGyro::FilteredGyro(Gyro* gyro, Filter<int, 3>* filter) {
     this->gyro = gyro;

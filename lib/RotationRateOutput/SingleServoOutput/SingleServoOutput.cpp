@@ -1,4 +1,4 @@
-#include <SingleServoOutput.h>
+#include "SingleServoOutput.h"
 
 #define DEFAULT_SERVO_MIDDLE 1500
 #define DEFAULT_SERVO_RANGE 1000

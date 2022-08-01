@@ -1,7 +1,7 @@
 #ifndef _PID_GAIN_CALCULATOR_H
 #define _PID_GAIN_CALCULATOR_H
 
-#include <PID.h>
+#include <PID/PID.h>
 #include <GainCalculator.h>
 
 class PIDGainCalculator: public GainCalculator {

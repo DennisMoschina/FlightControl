@@ -1,4 +1,4 @@
-#include <ServoThrottleOutput.h>
+#include "ServoThrottleOutput.h"
 
 ServoThrottleOutput::ServoThrottleOutput(Servo* output) {
     this->output = output;

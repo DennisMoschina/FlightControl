@@ -1,6 +1,6 @@
-#include <OutputCalculator.h>
+#include "StabilizedOutputCalculator.h"
 
-OutputCalculator::OutputCalculator(int steeringInputResolution,
+StabilizedOutputCalculator::StabilizedOutputCalculator(int steeringInputResolution,
                         int outputResolution,
                         RotationData maxRates,
                         Gyro* rotationReader,
@@ -10,7 +10,7 @@ OutputCalculator::OutputCalculator(int steeringInputResolution,
     this->stabilizer = stabilizer;
 }
 
-RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
+RotationData StabilizedOutputCalculator::calculateOutput(RotationData servoInput) {
     RotationData setpoint = this->calculateSetpoint(servoInput);
 
     RotationData gyroReadings = rotationReader->getRotation();
@@ -31,7 +31,7 @@ RotationData OutputCalculator::calculateOutput(RotationData servoInput) {
     return this->adjustOutput(output, this->stabilizer->getResolution());
 }
 
-RotationData OutputCalculator::calculateSetpoint(RotationData input) {
+RotationData StabilizedOutputCalculator::calculateSetpoint(RotationData input) {
     int resolution = this->getSteeringInputResolution();
     RotationData setpoint;
     setpoint.yaw = map(input.yaw, -resolution, resolution, -this->maxRates.yaw, this->maxRates.yaw);
@@ -40,6 +40,6 @@ RotationData OutputCalculator::calculateSetpoint(RotationData input) {
     return setpoint;
 }
 
-void OutputCalculator::reset() {
+void StabilizedOutputCalculator::reset() {
     this->stabilizer->reset();
 }
