@@ -31,6 +31,11 @@
 #include <ServoInputReader/ServoInputReader.h>
 #include <ThrottleManagingFlightController/ThrottleManagingFlightController.h>
 
+
+#include <DataLogger.h>
+#include <Buffer/ArrayBuffer/ArrayBuffer.h>
+
+
 #define THROTTLE_INPUT_PIN 5
 #define THROTTLE_OUTPUT_PIN 2
 

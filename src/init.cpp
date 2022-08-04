@@ -32,6 +32,18 @@ FlightController* controller;
 GainCalculator* gainCalculator;
 ThrottleReader* throttleReader;
 
+DataLogger<RotationData>* logger = new DataLogger<RotationData>(new ArrayBuffer<RotationData, 3000>());
+
+
+class LoggingGyro: public MPU6050 {
+public:
+    RotationData getRotation() {
+        RotationData rotation = MPU6050::getRotation();
+        logger->log(rotation);
+        return rotation;
+    }
+};
+
 void assign() {
     rudderInput = new ServoInputPin<RUDDER_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
     elevatorInput = new ServoInputPin<ELEVATOR_INPUT_PIN>(SERVO_MIN, SERVO_MAX);
@@ -55,7 +67,7 @@ void assign() {
 
     flightModeSwitch = new ServoSignalSwitch(2, gearInput);
 
-    mpu = new MPU6050();
+    mpu = new LoggingGyro();
     mpu->setTimeout(15);
     pid = new PID();
     filter = new EWMA<int, 3>(0.6);
