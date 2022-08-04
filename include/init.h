@@ -15,7 +15,7 @@
 #include <ServoSignalSwitch/ServoSignalSwitch.h>
 
 #include <RotationRateOutput.h>
-#include <SingleServoOutput/SingleServoOutput.h>
+#include <ServoOutput/SingleServoOutput/SingleServoOutput.h>
 #include <ServoOutput/ServoOutput.h>
 
 #include <ServoThrottleReader/ServoThrottleReader.h>
